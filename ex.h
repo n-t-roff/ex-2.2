@@ -46,6 +46,7 @@
 #include <signal.h>
 #include <setjmp.h>
 #include <sys/stat.h>
+#include <termios.h>
 
 extern	int errno;
 
@@ -73,9 +74,9 @@ typedef	short	bool;
 struct	option {
 	char	*oname;
 	char	*oabbrev;
-	short	otype;		/* Types -- see below */
-	short	odefault;	/* Default value */
-	short	ovalue;		/* Current value */
+	int	otype;		/* Types -- see below */
+	int	odefault;	/* Default value */
+	int	ovalue;		/* Current value */
 	char	*osvalue;
 };
 
@@ -126,9 +127,9 @@ struct	option options[NOPTS + 1];
  */
 #define	QUOTE	0200
 #define	TRIM	0177
-#define	CTRL(c)	('c' & 037)
-#define	NL	CTRL(j)
-#define	CR	CTRL(m)
+#define	CTRL(c)	(c & 037)
+#define	NL	CTRL('j')
+#define	CR	CTRL('m')
 #define	DELETE	0177		/* See also ATTN, QUIT in ex_tune.h */
 #define	ESCAPE	033
 
@@ -170,7 +171,7 @@ line	names['z'-'a'+2];	/* Mark registers a-z,' */
 short	notecnt;		/* Count for notify (to visual from cmd) */
 bool	numberf;		/* Command should run in number mode */
 char	obuf[BUFSIZ];		/* Buffer for tty output */
-short	ospeed;			/* Output speed (from gtty) */
+speed_t	ex_ospeed;			/* Output speed (from gtty) */
 short	peekc;			/* Peek ahead character (cmd mode input) */
 char	*pkill[2];		/* Trim for put with ragged (LISP) delete */
 bool	pfast;			/* Have stty -nl'ed to go faster */
@@ -197,7 +198,7 @@ short	xchng;			/* Suppresses multiple "No writes" in !cmd */
 #define	outchar(c)	(*Outchar)(c)
 #define	pastwh()	(ignore(skipwh()))
 #define	pline(no)	(*Pline)(no)
-#define	reset()		longjmp(resetlab)
+#define	reset()		longjmp(resetlab,1)
 #define	resexit(a)	copy(resetlab, a, sizeof (jmp_buf))
 #define	setexit()	setjmp(resetlab)
 #define	setlastchar(c)	lastc = c
@@ -238,6 +239,7 @@ line	*one;			/* First line */
 line	*truedol;		/* End of all lines, including saves */
 line	*unddol;		/* End of undo saved lines */
 line	*zero;			/* Points to empty slot before one */
+int	linelimit;
 
 /*
  * Undo information
@@ -332,6 +334,9 @@ int	vintr();
 int	vputch();
 int	vshftop();
 int	yank();
+struct termios ostart(void);
+struct termios setty(struct termios);
+struct termios unixex(char *, char *, int, int);
 
 /*
  * C doesn't have a (void) cast, so we have to fake it for lint's sake.

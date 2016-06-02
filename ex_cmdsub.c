@@ -13,6 +13,8 @@
 bool	endline = 1;
 line	*tad1;
 
+static void splitit(void);
+
 /*
  * Append after line a lines returned by function f.
  * Be careful about intermediate states to avoid scramble
@@ -697,8 +699,8 @@ zop2(lines, op)
 	plines(addr1, addr2, 0);
 }
 
-static
-splitit()
+static void
+splitit(void)
 {
 	register int l;
 

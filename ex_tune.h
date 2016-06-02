@@ -36,12 +36,12 @@
 #define	RHSSIZE		256		/* Size of rhs of substitute */
 #define	NBRA		9		/* Number of re \( \) pairs */
 #define	TAGSIZE		32		/* Tag length */
-#define	ONMSZ		32		/* Option name size */
+#define	ONMSZ		256		/* Option name size */
 #define	GBSIZE		256		/* Buffer size */
 #define	UXBSIZE		128		/* Unix command buffer size */
 #define	VBSIZE		128		/* Partial line max size in visual */
 /* LBLKS is also defined in expreserve.c */
-#define	LBLKS		125		/* Line pointer blocks in temp file */
+#define	LBLKS		900		/* Line pointer blocks in temp file */
 #define	MAXDIRT		12		/* Max dirtcnt before sync tfile */
 
 /*
@@ -54,7 +54,7 @@
  * be reasonably large.
  */
 #define	NARGS	100		/* Maximum number of names in "next" */
-#define	NCARGS	512		/* Maximum arglist chars in "next" */
+#define	NCARGS	LBSIZE		/* Maximum arglist chars in "next" */
 
 /*
  * Note: because the routine "alloca" is not portable, TUBESIZE
@@ -66,9 +66,9 @@
  * terminals like adm3's (glass tty's) where it switches to pseudo
  * hardcopy mode when a line gets longer than 80 characters.
  */
-#define	TUBELINES	36	/* Number of screen lines for visual */
-#define	TUBECOLS	160	/* Number of screen columns for visual */
-#define	TUBESIZE	2880	/* Maximum screen size for visual */
+#define	TUBELINES	100	/* Number of screen lines for visual */
+#define	TUBECOLS	300	/* Number of screen columns for visual */
+#define	TUBESIZE	(TUBELINES * TUBECOLS)	/* Maximum screen size for visual */
 
 /*
  * Output column (and line) are set to this value on cursor addressible

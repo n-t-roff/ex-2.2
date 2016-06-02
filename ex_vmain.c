@@ -133,7 +133,7 @@ reread:
 		/*
 		 * ^L		Clear screen e.g. after transmission error.
 		 */
-		case CTRL(l):
+		case CTRL('l'):
 			vclear();
 			vdirty(0, vcnt);
 			/* fall into... */
@@ -142,7 +142,7 @@ reread:
 		 * ^R		Retype screen, getting rid of @ lines.
 		 *		If in open, equivalent to ^L.
 		 */
-		case CTRL(r):
+		case CTRL('r'):
 			if (state != VISUAL) {
 				/*
 				 * Get a clean line, throw away the
@@ -217,7 +217,7 @@ reread:
 		 *		redrawn almost as it was.  In this case
 		 *		one should simply move the cursor.
 		 */
-		case CTRL(u):
+		case CTRL('u'):
 			if (hadcnt)
 				vSCROLL = cnt;
 			cnt = vSCROLL;
@@ -233,7 +233,7 @@ reread:
 		/*
 		 * ^D		Scroll down.  Like scroll up.
 		 */
-		case CTRL(d):
+		case CTRL('d'):
 			if (hadcnt)
 				vSCROLL = cnt;
 			cnt = vSCROLL;
@@ -283,7 +283,7 @@ reread:
 		 * ^F		Window forwards, with 2 lines of continuity.
 		 *		Count gives new screen size.
 		 */
-		case CTRL(f):
+		case CTRL('f'):
 			vsave();
 			if (hadcnt)
 				vsetsiz(cnt);
@@ -298,7 +298,7 @@ reread:
 		 * ^B		Window backwards, with 2 lines of continuity.
 		 *		Inverse of ^F.
 		 */
-		case CTRL(b):
+		case CTRL('b'):
 			vsave();
 			if (hadcnt)
 				vsetsiz(cnt);
@@ -645,7 +645,7 @@ pfixup:
 		 *		like a :e #, and thus can be used after a
 		 *		"No Write" diagnostic.
 		 */
-		case CTRL(^):
+		case CTRL('^'):
 			if (hadcnt)
 				vsetsiz(cnt);
 			addr = getmark('t');
@@ -662,7 +662,7 @@ pfixup:
 		 * ^]		Takes word after cursor as tag, and then does
 		 *		tag command.  Read ``go right to''.
 		 */
-		case CTRL(]):
+		case CTRL(']'):
 			grabtag();
 			oglobp = globp;
 			globp = "tag";
@@ -674,7 +674,7 @@ pfixup:
 		 *
 		 * BUG:		Was ^S but doesn't work in cbreak mode
 		 */
-		case CTRL(g):
+		case CTRL('g'):
 			oglobp = globp;
 			globp = "file";
 gogo:

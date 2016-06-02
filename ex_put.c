@@ -699,7 +699,13 @@ pstart()
 	flusho();
 	pfast = 1;
 	normtty++;
-	tty.sg_flags = normf & ~(ECHO|CRMOD);
+	tty = normf;
+	tty.c_oflag &= ~(ONLCR
+#ifdef TAB3
+	|TAB3
+#endif
+	);
+	tty.c_lflag &= ~ECHO;
 	sTTY(1);
 }
 
@@ -721,20 +727,26 @@ pstop()
 /*
  * Prep tty for open mode.
  */
-ostart()
+struct termios
+ostart(void)
 {
-	int f;
+	struct termios f;
 
 	if (!intty)
 		error("Open and visual must be used interactively");
 	gTTY(1);
 	normtty++;
-	f = tty.sg_flags;
-#ifdef V6
-	tty.sg_flags = (normf &~ (ECHO|CRMOD)) | RAW;
-#else
-	tty.sg_flags = (normf &~ (ECHO|CRMOD)) | CBREAK;
+	f = tty;
+	tty = normf;
+	tty.c_iflag &= ~ICRNL;
+	tty.c_lflag &= ~(ECHO|ICANON);
+	tty.c_oflag &= ~(
+#ifdef TAB3
+	TAB3|
 #endif
+	ONLCR);
+	tty.c_cc[VMIN] = 1;
+	tty.c_cc[VTIME] = 1;
 	sTTY(1);
 	putpad(VS);
 	pfast |= 2;
@@ -745,10 +757,10 @@ ostart()
  * Stop open, restoring tty modes.
  */
 ostop(f)
-	int f;
+	struct termios f;
 {
 
-	pfast = (f & CRMOD) == 0;
+	pfast = (f.c_oflag & ONLCR) == 0;
 	termreset(), fgoto(), flusho();
 	normal(f);
 	putpad(VE);
@@ -780,7 +792,7 @@ vraw()
  * Restore flags to normal state f.
  */
 normal(f)
-	int f;
+	struct termios f;
 {
 
 	if (normtty > 0) {
@@ -792,12 +804,12 @@ normal(f)
 /*
  * Straight set of flags to state f.
  */
-setty(f)
-	int f;
+struct termios
+setty(struct termios f)
 {
-	register int ot = tty.sg_flags;
+	struct termios ot = tty;
 
-	tty.sg_flags = f;
+	tty = f;
 	sTTY(1);
 	return (ot);
 }
@@ -806,7 +818,7 @@ gTTY(i)
 	int i;
 {
 
-	ignore(gtty(i, &tty));
+	tcgetattr(i, &tty);
 }
 
 sTTY(i)
@@ -816,7 +828,7 @@ sTTY(i)
 #ifdef V6
 	stty(i, &tty);
 #else
-	ioctl(i, TIOCSETN, &tty);
+	tcsetattr(i, TCSAFLUSH, &tty);
 #endif
 }
 

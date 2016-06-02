@@ -20,18 +20,13 @@
 # Ex wants stdio only to get the doprnt.o routine; if other stdio stuff
 # gets dragged in that is a mistake.
 #
-.c.o:
-	${MKSTR} - ex2.0strings x $*.c
-	${CC} -E ${CFLAGS} x$*.c | ${XSTR} -c -
-	rm -f x$*.c
-	${CC} ${CFLAGS} -c x.c 
-	mv x.o $*.o
 BINDIR=	/usr/ucb
 LIBDIR=	/usr/lib
 FOLD=	/usr/ucb/fold
 CTAGS=	/usr/ucb/ctags
 XSTR=	/usr/ucb/xstr
-CFLAGS=	-O -DTABS=8 -DLISP -DCHDIR -DUCVISUAL
+CFLAGS=	-DTABS=8 -DLISP -DCHDIR -DUCVISUAL -g -O0
+LDFLAGS=
 MKSTR=	/usr/ucb/mkstr
 CXREF=	/usr/ucb/cxref
 INCLUDE=/usr/include
@@ -40,26 +35,19 @@ OBJS=	ex.o ex_addr.o ex_cmds.o ex_cmds2.o ex_cmdsub.o ex_data.o ex_get.o \
 	ex_io.o ex_put.o ex_re.o ex_set.o ex_subr.o ex_temp.o ex_tty.o \
 	ex_v.o ex_vadj.o ex_vget.o ex_vmain.o ex_voperate.o \
 	ex_vops.o ex_vops2.o ex_vops3.o ex_vput.o ex_vwind.o \
-	printf.o strings.o
+	3printf.o
 
-a.out: ${OBJS} tags
-	cc -i ${OBJS} -ltermlib
+a.out: ${OBJS} #tags
+	${CC} ${OBJS} -ltinfo
 
 tags:
 	${CTAGS} ex.c ex_*.c
 
 ${OBJS}: ex_vars.h
 
-ex_vars.h:
-	csh makeoptions ${CFLAGS}
+#ex_vars.h:
+#	csh makeoptions ${CFLAGS}
 
-strings.o: strings
-	${XSTR}
-	${CC} -c -S xs.c
-	-echo only on a VAX can we 'ed - <:rofix xs.s'
-	as -o strings.o xs.s
-	rm xs.s
-	
 exrecover: exrecover.o
 	${CC} -o exrecover exrecover.o
 
@@ -73,7 +61,7 @@ expreserve.o:
 	${CC} -c -O expreserve.c
 
 clean:
-	-rm a.out exrecover expreserve ex2.0strings strings core trace tags
+	-rm -f a.out exrecover expreserve ex2.0strings strings core trace tags
 	-echo if we dont have ex we cant make it so dont rm ex_vars.h
 	-rm -f *.o x*.[cs]
 
@@ -115,3 +103,6 @@ print:
 	@ls -ls | ${PR}
 	@${CXREF} *.c | ${PR} -h XREF
 	@${PR} *.h *.c
+
+.c.o:
+	${CC} ${CFLAGS} -c $<

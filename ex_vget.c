@@ -333,7 +333,7 @@ beep()
 	if (VB)
 		vputp(VB, 0);
 	else
-		vputc(CTRL(g));
+		vputc(CTRL('g'));
 }
 
 /*

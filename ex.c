@@ -86,14 +86,16 @@ main(ac, av)
 	 * get messed up if an interrupt comes in quickly.
 	 */
 	gTTY(1);
-	normf = tty.sg_flags;
+	normf = tty;
 
+#if 0
 	/*
 	 * For debugging take files out of . if name is a.out.
 	 * If a 'd' in our name, then set options for edit.
 	 */
 	if (av[0][0] == 'a')
 		erpath += 9;
+#endif
 	if (ivis) {
 		options[MAGIC].odefault = value(MAGIC) = 0;
 		options[BEAUTIFY].odefault = value(BEAUTIFY) = 1;
@@ -107,11 +109,13 @@ main(ac, av)
 	 * Open the error message file.
 	 */
 	draino();
+#if 0
 	erfile = open(erpath, 0);
 	if (erfile < 0) {
 		flush();
 		exit(1);
 	}
+#endif
 	pstop();
 
 	/*
@@ -133,8 +137,9 @@ main(ac, av)
 	 * this as ed does, saving a little core, but it will probably
 	 * not often make much difference.
 	 */
-	fendcore = (line *) sbrk(0);
-	endcore = fendcore - 2;
+	linelimit = 2048;
+	fendcore = malloc(linelimit * sizeof(line *));
+	endcore = fendcore + linelimit - 1;
 
 	/*
 	 * Process flag arguments.

@@ -53,7 +53,7 @@ oop()
 {
 	register char *ic;
 	char atube[TUBESIZE + LBSIZE];
-	register int f;
+	struct termios f;
 
 	ovbeg();
 	if (peekchar() == '/') {
@@ -153,7 +153,7 @@ vop()
 {
 	register int c;
 	char atube[TUBESIZE + LBSIZE];
-	register int f;
+	struct termios f;
 
 	if (!CA && UP == NOSTR) {
 		if (initev) {

@@ -108,7 +108,7 @@ commands(noprompt, exitoneof)
 		 * the set of available commands here to save work below.
 		 */
 		if (inopen) {
-			if (c=='\n' || c=='\r' || c==CTRL(d) || c==EOF) {
+			if (c=='\n' || c=='\r' || c==CTRL('d') || c==EOF) {
 				if (addr2)
 					dot = addr2;
 				if (c == EOF)
@@ -617,14 +617,14 @@ caseline:
 				if (dot == dol)
 					error("At EOF|At end-of-file");
 				if (UP != NOSTR && c == '\n' && !inglobal)
-					c = CTRL(k);
+					c = CTRL('k');
 				addr2 = dot + 1;
 			}
 			addr1 = addr2;
 			setdot();
 			nonzero();
 			getline(*addr1);
-			if (c == CTRL(k)) {
+			if (c == CTRL('k')) {
 				flush1();
 				destline--;
 				if (hadpr)
@@ -675,7 +675,7 @@ numberit:
 
 /* ^D */
 /* EOF */
-		case CTRL(d):
+		case CTRL('d'):
 		case EOF:
 			if (exitoneof) {
 				if (addr2 != 0)
