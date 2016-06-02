@@ -43,7 +43,7 @@ a.out: ${OBJS} #tags
 tags:
 	${CTAGS} ex.c ex_*.c
 
-${OBJS}: ex_vars.h
+${OBJS}: ex_vars.h ex.h
 
 #ex_vars.h:
 #	csh makeoptions ${CFLAGS}

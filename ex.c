@@ -137,7 +137,7 @@ main(ac, av)
 	 * this as ed does, saving a little core, but it will probably
 	 * not often make much difference.
 	 */
-	linelimit = 2048;
+	linelimit = 0x4000;
 	fendcore = malloc(linelimit * sizeof(line *));
 	endcore = fendcore + linelimit - 1;
 
@@ -226,7 +226,8 @@ main(ac, av)
 			filioerr(EXRECOVER);
 			exit(1);
 		}
-		CP(savedfile, *av++), ac--;
+		CP(savedfile, *av);
+		av++, ac--;
 	}
 
 	/*
