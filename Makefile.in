@@ -32,10 +32,10 @@ MALLOC_O=mapmalloc.o
 CTAGS=	/usr/ucb/ctags
 _CFLAGS=	-DTABS=8 -DLISP -DCHDIR -DUCVISUAL \
 	${D_SBRK} -DLIBDIR='"${LIBDIR}"' -Wall -Wextra \
-	-g -O0 -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls \
-	-fsanitize=undefined \
-	-fsanitize=integer \
-	-fsanitize=address
+	-g -O0 -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls
+#	-fsanitize=undefined \
+#	-fsanitize=integer \
+#	-fsanitize=address
 _LDFLAGS=-s
 OBJS=	ex.o ex_addr.o ex_cmds.o ex_cmds2.o ex_cmdsub.o ex_data.o ex_get.o \
 	ex_io.o ex_put.o ex_re.o ex_set.o ex_subr.o ex_temp.o ex_tty.o \

@@ -79,7 +79,7 @@ bool	XN;			/* A newline gets eaten after wrap (concept) */
  */
 bool	NONL;			/* Terminal can't hack linefeeds doing a CR */
 bool	UPPERCASE;		/* Ick! */
-extern short	LINES;			/* Number of lines on screen */
+extern short	EX_LINES;			/* Number of lines on screen */
 extern short	COLUMNS;
 short	OCOLUMNS;		/* Save COLUMNS for a hack in open mode */
 

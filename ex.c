@@ -70,7 +70,9 @@ main(ac, av)
 	register int ac;
 	register char *av[];
 {
+#if 0
 	char *erpath = EXSTRINGS;
+#endif
 	register char *cp;
 	register int c;
 	bool recov = 0;

@@ -381,7 +381,7 @@ casek:
 			pflag = 0;
 print:
 			nonzero();
-			if (CL && span() > LINES) {
+			if (CL && span() > EX_LINES) {
 				flush1();
 				vclear();
 			}
@@ -551,7 +551,7 @@ quit:
 				/* should use SCCS subst here */
 				ex_printf("Version 2.2, May 6, 1979"
 				    " (2BSD).  git "
-				    "160608 17:00"
+				    "160608 17:49"
 				    );
 				noonl();
 				continue;
@@ -714,6 +714,6 @@ numberit:
 			ungetchar(c);
 			tailprim("", 0, 0);
 		}
-		error("What?|Unknown command character '%c'", c);
+		ierror("What?|Unknown command character '%c'", c);
 	}
 }

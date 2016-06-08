@@ -39,6 +39,7 @@
  * of additional terminal descriptions you add to the termcap data base.
  */
 
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -356,6 +357,9 @@ void	set(void);
 void	merror(char *);
 void	imerror(char *, int);
 void	smerror(char *, char *);
+void	error(char *);
+void	ierror(char *, int);
+void	serror(char *, char *);
 void	reverse(line *, line *);
 void	netchange(int);
 void	killcnt(int);

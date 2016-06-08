@@ -354,22 +354,22 @@ fgoto(void)
 			}
 			outcol = 0;
 		}
-		if (outline > LINES - 1) {
-			destline -= outline - (LINES - 1);
-			outline = LINES - 1;
+		if (outline > EX_LINES - 1) {
+			destline -= outline - (EX_LINES - 1);
+			outline = EX_LINES - 1;
 		}
 	}
-	if (destline > LINES - 1) {
+	if (destline > EX_LINES - 1) {
 		l = destline;
-		destline = LINES - 1;
-		if (outline < LINES - 1) {
+		destline = EX_LINES - 1;
+		if (outline < EX_LINES - 1) {
 			c = destcol;
 			if (pfast == 0 && (!CA || holdcm))
 				destcol = 0;
 			fgoto();
 			destcol = c;
 		}
-		while (l > LINES - 1) {
+		while (l > EX_LINES - 1) {
 			putch('\n');
 			l--;
 			if (pfast == 0)
@@ -474,11 +474,11 @@ plod()
 			tputs(HO, 0, putch);
 			outcol = outline = 0;
 		} else if (LL) {
-			k = (LINES - 1) - destline;
+			k = (EX_LINES - 1) - destline;
 			if (i + k + 2 < j) {
 				tputs(LL, 0, putch);
 				outcol = 0;
-				outline = LINES - 1;
+				outline = EX_LINES - 1;
 			}
 		}
 	}
@@ -554,8 +554,8 @@ noteinp()
 {
 
 	outline++;
-	if (outline > LINES - 1)
-		outline = LINES - 1;
+	if (outline > EX_LINES - 1)
+		outline = EX_LINES - 1;
 	destline = outline;
 	destcol = outcol = 0;
 }
@@ -573,7 +573,7 @@ termreset()
 
 	endim();
 	destcol = 0;
-	destline = LINES - 1;
+	destline = EX_LINES - 1;
 	if (CA) {
 		outcol = UKCOL;
 		outline = UKCOL;

@@ -74,7 +74,7 @@ main(argc, argv)
 		exit(0);
 	}
 	if (argc != 3)
-		error(" Wrong number of arguments to exrecover", 0);
+		error(" Wrong number of arguments to exrecover");
 
 	CP(file, argv[2]);
 
@@ -168,12 +168,11 @@ main(argc, argv)
  * a newline which would screw up the screen.
  */
 /*VARARGS2*/
-error(str, inf)
-	char *str;
-	int inf;
+void
+error(char *str)
 {
 
-	fprintf(stderr, str, inf);
+	fputs(str, stderr);
 	tcgetattr(2, &tty);
 	if (tty.c_lflag & ICANON)
 		fprintf(stderr, "\n");
@@ -397,7 +396,7 @@ findtmp(char *dir)
 	/*
 	 * Extreme lossage...
 	 */
-	error(" File not found", 0);
+	error(" File not found");
 }
 
 /*

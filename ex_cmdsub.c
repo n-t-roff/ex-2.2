@@ -611,7 +611,7 @@ zop(hadpr)
 		if (op == '=')
 			lines += 2;
 	} else
-		lines = op == EOF ? value(SCROLL) : excl ? LINES - 1 : value(WINDOW);
+		lines = op == EOF ? value(SCROLL) : excl ? EX_LINES - 1 : value(WINDOW);
 	if (inopen || c != EOF) {
 		ungetchar(c);
 		ex_newline();

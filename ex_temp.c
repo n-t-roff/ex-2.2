@@ -388,7 +388,7 @@ putreg(c)
 			vgoto(WECHO, 0);
 		}
 		vreg = -1;
-		error("Nothing in register %c", c);
+		ierror("Nothing in register %c", c);
 	}
 	if (inopen && partreg(c)) {
 		squish();

@@ -349,9 +349,7 @@ merror1(seekpt)
 #endif
 {
 
-	lseek(erfile, (long) seekpt, 0);
-	if (read(erfile, linebuf, 128) < 2)
-		CP(linebuf, "ERROR");
+	strcpy(linebuf, seekpt);
 }
 
 morelines()
