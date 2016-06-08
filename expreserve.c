@@ -1,10 +1,15 @@
 /* Copyright (c) 1979 Regents of the University of California */
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
 #include <stdio.h>
 #include <ctype.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/dir.h>
+#include <dirent.h>
 #include <pwd.h>
+#include <paths.h>
+#include <fcntl.h>
 
 /*
  * Expreserve - preserve a file in /usr/preserve
@@ -28,7 +33,7 @@
 
 struct 	header {
 	time_t	Time;			/* Time temp file last updated */
-	short	Uid;			/* This users identity */
+	uid_t	Uid;			/* This users identity */
 	short	Flines;			/* Number of lines in file */
 	char	Savedfile[FNSIZE];	/* The current file name */
 	short	Blocks[LBLKS];		/* Blocks where line pointers stashed */
@@ -42,17 +47,15 @@ struct 	header {
 #define	ignorl(a)	a
 #endif
 
-struct	passwd *getpwuid();
-off_t	lseek();
-FILE	*popen();
+static void notify(int, char *);
 
 #define eq(a, b) strcmp(a, b) == 0
 
-main(argc)
-	int argc;
+int
+main(int argc, char **argv)
 {
-	register FILE *tf;
-	struct direct dirent;
+	DIR *tf;
+	struct dirent *dirent;
 	struct stat stbuf;
 
 	/*
@@ -81,35 +84,38 @@ main(argc)
 		exit(1);
 	}
 
-	tf = fopen(".", "r");
+	tf = opendir(".");
 	if (tf == NULL) {
 		perror("/tmp");
 		exit(1);
 	}
-	while (fread((char *) &dirent, sizeof dirent, 1, tf) == 1) {
-		if (dirent.d_ino == 0)
-			continue;
+	while ((dirent = readdir(tf))) {
 		/*
 		 * Ex temporaries must begin with Ex;
 		 * we check that the 10th character of the name is null
 		 * so we won't have to worry about non-null terminated names
 		 * later on.
 		 */
-		if (dirent.d_name[0] != 'E' || dirent.d_name[1] != 'x' || dirent.d_name[10])
+		if (dirent->d_name[0] != 'E' || dirent->d_name[1] != 'x' || dirent->d_name[10])
 			continue;
-		if (stat(dirent.d_name, &stbuf))
+		if (stat(dirent->d_name, &stbuf))
 			continue;
 		if ((stbuf.st_mode & S_IFMT) != S_IFREG)
 			continue;
 		/*
 		 * Save the bastard.
 		 */
-		ignore(copyout(dirent.d_name));
+		ignore(copyout(dirent->d_name));
 	}
-	exit(0);
+	closedir(tf);
+	return 0;
 }
 
-char	pattern[] =	"/usr/preserve/Exaa`XXXXX";
+#ifndef _PATH_PRESERVE
+# define _PATH_PRESERVE "/var/preserve"
+#endif
+
+char	pattern[] =	_PATH_PRESERVE "/Exaa`XXXXX";
 
 /*
  * Copy file name into /usr/preserve/...
@@ -287,9 +293,8 @@ whoops:
 /*
  * Notify user uid that his file fname has been saved.
  */
-notify(uid, fname)
-	int uid;
-	char *fname;
+static void
+notify(int uid, char *fname)
 {
 	struct passwd *pp = getpwuid(uid);
 	register FILE *mf;

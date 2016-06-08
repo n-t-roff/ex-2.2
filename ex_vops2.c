@@ -253,7 +253,7 @@ vappend(int ch, int cnt, int indent)
 
 				Outchar = vinschar;
 				hold |= HOLDQIK;
-				printf("%s", genbuf);
+				ex_printf("%s", genbuf);
 				hold = oldhold;
 				Outchar = vputchar;
 			}

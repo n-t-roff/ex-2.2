@@ -5,10 +5,10 @@
 
 #undef	BUFSIZ
 #undef	EOF
-#undef	NULL
 
 #include <stdio.h>
 #include <sys/dir.h>
+#include <paths.h>
 
 /*
  * Ex recovery program
@@ -35,11 +35,15 @@
 #define	ignorl(a)	a
 #endif
 
+#ifndef _PATH_PRESERVE
+# define _PATH_PRESERVE "/var/preserve"
+#endif
+
 /*
  * This directory definition also appears (obviously) in expreserve.c.
  * Change both if you change either.
  */
-char	mydir[] =	"/usr/preserve";
+char	mydir[] =	_PATH_PRESERVE;
 
 /*
  * Limit on the number of printed entries
@@ -51,21 +55,16 @@ char	*ctime();
 char	nb[BUFSIZ];
 int	vercnt;			/* Count number of versions of file found */
 
+static void listfiles(char *);
+static void findtmp(char *);
+static void searchdir(char *);
+
 main(argc, argv)
 	int argc;
 	char *argv[];
 {
 	register char *cp;
 	register int b, i;
-
-	/*
-	 * Initialize as though the editor had just started.
-	 */
-	fendcore = (line *) sbrk(0);
-	dot = zero = dol = fendcore;
-	one = zero + 1;
-	endcore = fendcore - 2;
-	iblock = oblock = -1;
 
 	/*
 	 * If given only a -r argument, then list the saved files.
@@ -96,11 +95,12 @@ main(argc, argv)
 	/*
 	 * Allocate space for the line pointers from the temp file.
 	 */
-	if ((int) sbrk((int) (H.Flines * sizeof (line))) == -1)
-		/*
-		 * Good grief.
-		 */
-		error(" Not enough core for lines", 0);
+	fendcore = malloc(H.Flines * sizeof (line));
+	dot = zero = dol = fendcore;
+	one = zero + 1;
+	endcore = fendcore + H.Flines * sizeof (line) - 1;
+	iblock = oblock = -1;
+
 #ifdef DEBUG
 	fprintf(stderr, "%d lines\n", H.Flines);
 #endif
@@ -174,8 +174,8 @@ error(str, inf)
 {
 
 	fprintf(stderr, str, inf);
-	gtty(2, &tty);
-	if ((tty.sg_flags & RAW) == 0)
+	tcgetattr(2, &tty);
+	if (tty.c_lflag & ICANON)
 		fprintf(stderr, "\n");
 	exit(1);
 }
@@ -189,15 +189,15 @@ error(str, inf)
 struct svfile {
 	char	sf_name[FNSIZE + 1];
 	int	sf_lines;
-	char	sf_entry[DIRSIZ + 1];
+	char	sf_entry[MAXNAMLEN + 1];
 	time_t	sf_time;
 };
 
-listfiles(dirname)
-	char *dirname;
+static void
+listfiles(char *dirname)
 {
-	register FILE *dir;
-	struct direct dirent;
+	DIR *dir;
+	struct dirent *dirent;
 	int ecount, qucmp();
 	register int f;
 	char *cp;
@@ -206,7 +206,7 @@ listfiles(dirname)
 	/*
 	 * Open /usr/preserve, and go there to make things quick.
 	 */
-	dir = fopen(dirname, "r");
+	dir = opendir(dirname);
 	if (dir == NULL) {
 		perror(dirname);
 		return;
@@ -221,13 +221,11 @@ listfiles(dirname)
 	 */
 	fp = &svbuf[0];
 	ecount = 0;
-	while (fread((char *) &dirent, sizeof dirent, 1, dir) == 1) {
-		if (dirent.d_ino == 0)
-			continue;
-		if (dirent.d_name[0] != 'E')
+	while ((dirent = readdir(dir))) {
+		if (dirent->d_name[0] != 'E')
 			continue;
 #ifdef DEBUG
-		fprintf(stderr, "considering %s\n", dirent.d_name);
+		fprintf(stderr, "considering %s\n", dirent->d_name);
 #endif
 		/*
 		 * Name begins with E; open it and
@@ -235,7 +233,7 @@ listfiles(dirname)
 		 * If not, then don't bother with this file, it can't
 		 * be ours.
 		 */
-		f = open(dirent.d_name, 0);
+		f = open(dirent->d_name, 0);
 		if (f < 0) {
 #ifdef DEBUG
 			fprintf(stderr, "open failed\n");
@@ -260,13 +258,13 @@ listfiles(dirname)
 		/*
 		 * Saved the day!
 		 */
-		enter(fp++, dirent.d_name, ecount);
+		enter(fp++, dirent->d_name, ecount);
 		ecount++;
 #ifdef DEBUG
-		fprintf(stderr, "entered file %s\n", dirent.d_name);
+		fprintf(stderr, "entered file %s\n", dirent->d_name);
 #endif
 	}
-	ignore(fclose(dir));
+	ignore(closedir(dir));
 
 	/*
 	 * If any files were saved, then sort them and print
@@ -360,8 +358,8 @@ int	bestfd;			/* Keep best file open so it dont vanish */
  * (i.e. usually /tmp) and in /usr/preserve.
  * Want to find the newest so we search on and on.
  */
-findtmp(dir)
-	char *dir;
+static void
+findtmp(char *dir)
 {
 
 	/*
@@ -413,21 +411,18 @@ findtmp(dir)
  * name of the file we want to unlink is relative, rather than absolute
  * we won't be able to find it again.
  */
-searchdir(dirname)
-	char *dirname;
+static void
+searchdir(char *dirname)
 {
-	struct direct dirent;
-	register FILE *dir;
+	struct dirent *dirent;
+	DIR *dir;
 	char dbuf[BUFSIZ];
 
-	dir = fopen(dirname, "r");
+	dir = opendir(dirname);
 	if (dir == NULL)
 		return;
-	setbuf(dir, dbuf);
-	while (fread((char *) &dirent, sizeof dirent, 1, dir) == 1) {
-		if (dirent.d_ino == 0)
-			continue;
-		if (dirent.d_name[0] != 'E' || dirent.d_name[DIRSIZ - 1] != 0)
+	while ((dirent = readdir(dir))) {
+		if (dirent->d_name[0] != 'E')
 			continue;
 		/*
 		 * Got a file in the directory starting with E...
@@ -435,7 +430,9 @@ searchdir(dirname)
 		 * later, and check that this is really a file
 		 * we are looking for.
 		 */
-		ignore(strcat(strcat(strcpy(nb, dirname), "/"), dirent.d_name));
+		strcpy(nb, dirname);
+		strcat(nb, "/");
+		strcat(nb, dirent->d_name);
 		if (yeah(nb)) {
 			/*
 			 * Well, it is the file we are looking for.
@@ -458,7 +455,7 @@ searchdir(dirname)
 		}
 		ignore(close(tfile));
 	}
-	ignore(fclose(dir));
+	ignore(closedir(dir));
 }
 
 /*
@@ -622,7 +619,8 @@ int	cntch, cntln, cntodd, cntnull;
 /*
  * Following routines stolen mercilessly from ex.
  */
-putfile()
+void
+putfile(void)
 {
 	line *a1;
 	register char *fp, *lp;
@@ -636,7 +634,7 @@ putfile()
 	nib = BUFSIZ;
 	fp = genbuf;
 	do {
-		getline(*a1++);
+		ex_getline(*a1++);
 		lp = linebuf;
 		for (;;) {
 			if (--nib < 0) {
@@ -678,7 +676,7 @@ clrstats()
 #define	READ	0
 #define	WRITE	1
 
-getline(tl)
+ex_getline(tl)
 	line tl;
 {
 	register char *bp, *lp;
@@ -694,9 +692,6 @@ getline(tl)
 			nl = nleft;
 		}
 }
-
-int	read();
-int	write();
 
 char *
 getblock(atl, iof)
@@ -737,20 +732,14 @@ blkio(b, buf, iofcn)
 {
 
 	lseek(tfile, (long) (unsigned) b * BUFSIZ, 0);
-	if ((*iofcn)(tfile, buf, BUFSIZ) != 512)
+	if ((*iofcn)(tfile, buf, BUFSIZ) != BUFSIZ)
 		syserror();
 }
 
 syserror()
 {
-	extern int sys_nerr;
-	extern char *sys_errlist[];
-
 	dirtcnt = 0;
 	write(2, " ", 1);
-	if (errno >= 0 && errno <= sys_nerr)
-		error(sys_errlist[errno]);
-	else
-		error("System error %d", errno);
+	error(strerror(errno));
 	exit(1);
 }

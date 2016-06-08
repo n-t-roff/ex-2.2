@@ -20,25 +20,28 @@
 # Ex wants stdio only to get the doprnt.o routine; if other stdio stuff
 # gets dragged in that is a mistake.
 #
-BINDIR=	/usr/ucb
-LIBDIR=	/usr/lib
-FOLD=	/usr/ucb/fold
+PREFIX=	${DESTDIR}/usr/local
+BINDIR=	${PREFIX}/bin
+LIBDIR=	${PREFIX}/libexec
+#
+# Either none or both of the next two lines needs to be uncommented
+#
+#D_SBRK=	-DUNIX_SBRK
+#MALLOC_O=mapmalloc.o
 CTAGS=	/usr/ucb/ctags
-XSTR=	/usr/ucb/xstr
-CFLAGS=	-DTABS=8 -DLISP -DCHDIR -DUCVISUAL -g -O0
-LDFLAGS=
-MKSTR=	/usr/ucb/mkstr
-CXREF=	/usr/ucb/cxref
-INCLUDE=/usr/include
-PR=	pr
+_CFLAGS=	-DTABS=8 -DLISP -DCHDIR -DUCVISUAL -Wall -Wextra \
+	-g -O0 -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls \
+	-fsanitize=undefined \
+	-fsanitize=integer \
+	-fsanitize=address
+_LDFLAGS=
 OBJS=	ex.o ex_addr.o ex_cmds.o ex_cmds2.o ex_cmdsub.o ex_data.o ex_get.o \
 	ex_io.o ex_put.o ex_re.o ex_set.o ex_subr.o ex_temp.o ex_tty.o \
 	ex_v.o ex_vadj.o ex_vget.o ex_vmain.o ex_voperate.o \
 	ex_vops.o ex_vops2.o ex_vops3.o ex_vput.o ex_vwind.o \
 	3printf.o
 
-a.out: ${OBJS} #tags
-	${CC} ${OBJS} -ltinfo
+all: a.out exrecover expreserve #tags
 
 tags:
 	${CTAGS} ex.c ex_*.c
@@ -46,63 +49,49 @@ tags:
 ${OBJS}: ex_vars.h ex.h
 
 #ex_vars.h:
-#	csh makeoptions ${CFLAGS}
+#	csh makeoptions ${_CFLAGS}
+
+a.out: ${OBJS}
+	${CC} ${CFLAGS} ${_CFLAGS} ${LDFLAGS} ${_LDFLAGS} ${OBJS} -ltinfo
 
 exrecover: exrecover.o
-	${CC} -o exrecover exrecover.o
-
-exrecover.o:
-	${CC} -c -O exrecover.c
+	${CC} ${CFLAGS} ${_CFLAGS} ${LDFLAGS} ${_LDFLAGS} -o $@ exrecover.o
 
 expreserve: expreserve.o
-	${CC} -o expreserve expreserve.o
+	${CC} ${CFLAGS} ${_CFLAGS} ${LDFLAGS} ${_LDFLAGS} -o $@ expreserve.o
 
-expreserve.o:
-	${CC} -c -O expreserve.c
+.c.o:
+	${CC} ${CFLAGS} -c $<
 
 clean:
 	-rm -f a.out exrecover expreserve ex2.0strings strings core trace tags
 	-echo if we dont have ex we cant make it so dont rm ex_vars.h
 	-rm -f *.o x*.[cs]
 
-install: a.out
-	-chmod 711 ${BINDIR}/ex
-	-${BINDIR}/ex </dev/null
-	-rm ${BINDIR}/ex ${BINDIR}/e /usr/bin/ex ${BINDIR}/edit ${BINDIR}/vi
-	cp a.out ${BINDIR}/ex
-	cp ex2.0strings ${LIBDIR}/ex2.0strings
-	cp ex2.0strings /lib/ex2.0strings
-	ln ${BINDIR}/ex ${BINDIR}/edit
-	ln ${BINDIR}/ex ${BINDIR}/e
-	ln ${BINDIR}/ex /usr/bin/ex
-	ln ${BINDIR}/ex ${BINDIR}/vi
-	chmod 1711 ${BINDIR}/ex
+distclean: clean
+	rm -rf Makefile config.log
 
-installutil: exrecover expreserve
-	mkdir /usr/preserve
-	cp exrecover ${LIBDIR}/ex2.0recover
-	cp expreserve ${LIBDIR}/ex2.0preserve
-	chmod 4755 ${LIBDIR}/ex2.0recover ${LIBDIR}/ex2.0preserve
+install: ${BINDIR} ${LIBDIR}
+	install a.out ${BINDIR}/ex
+	for i in vi view edit; do \
+		ln -sf ${BINDIR}/ex ${BINDIR}/$$i; \
+	done
+	for i in recover preserve; do \
+		install ex$$i ${LIBDIR}/ex${VERSION}$$i; \
+	done
+
+uninstall:
+	for i in ex vi view edit; do \
+		rm -f ${BINDIR}/$$i; \
+	done
+	for i in recover preserve; do \
+		rm -f ${LIBDIR}/ex${VERSION}$$i; \
+	done
+
+${BINDIR} ${LIBDIR}:
+	mkdir -p $@
 
 lint:
 	lint ex.c ex_?*.c
 	lint -u exrecover.c
 	lint expreserve.c
-
-print:
-	@${PR} READ* BUGS
-	@${PR} makefile*
-	@${PR} /etc/termcap
-	@(size -l a.out ; size *.o) | ${PR} -h sizes
-	@${PR} -h errno.h ${INCLUDE}/errno.h
-	@${PR} -h setjmp.h ${INCLUDE}/setjmp.h
-	@${PR} -h sgtty.h ${INCLUDE}/sgtty.h
-	@${PR} -h signal.h ${INCLUDE}/signal.h
-	@${PR} -h stat.h ${INCLUDE}/stat.h
-	@${PR} -h types.h ${INCLUDE}/types.h
-	@ls -ls | ${PR}
-	@${CXREF} *.c | ${PR} -h XREF
-	@${PR} *.h *.c
-
-.c.o:
-	${CC} ${CFLAGS} -c $<

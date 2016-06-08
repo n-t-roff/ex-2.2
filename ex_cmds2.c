@@ -88,7 +88,7 @@ erewind()
 	argv = argv0;
 	args = args0;
 	if (argc > 1 && !hush) {
-		printf(mesg("%d files@to edit"), argc);
+		ex_printf(mesg("%d files@to edit"), argc);
 		if (inopen)
 			putchar(' ');
 		else

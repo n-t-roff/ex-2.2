@@ -138,7 +138,7 @@ numbline(i)
 
 	if (shudclob)
 		slobber(' ');
-	printf("%6d  ", i);
+	ex_printf("%6d  ", i);
 	normline();
 }
 
@@ -674,7 +674,7 @@ lprintf(cp, dp)
 	register int (*P)();
 
 	P = setlist(1);
-	printf(cp, dp);
+	ex_printf(cp, dp);
 	Putchar = P;
 }
 

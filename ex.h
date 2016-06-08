@@ -388,7 +388,7 @@ void	vclreol(void);
 void	vshow(line *, line *);
 void	vdown(int, int, bool);
 void	vup(int, int, bool);
-void	printf(const char *, ...);
+void	ex_printf(const char *, ...);
 
 /*
  * C doesn't have a (void) cast, so we have to fake it for lint's sake.

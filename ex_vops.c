@@ -335,7 +335,7 @@ vchange(int c)
 			 */
 			*cursor = 0;
 			strcpy(genbuf, linebuf);
-			getline(*wdot);
+			ex_getline(*wdot);
 			if (strlen(genbuf) + strlen(wcursor) > LBSIZE - 2) {
 				getDOT();
 				beep();
@@ -686,7 +686,7 @@ xdw()
 		if (vpastwh(linebuf) >= cursor)
 			wcursor = 0;
 		else {
-			getline(*wdot);
+			ex_getline(*wdot);
 			wcursor = strend(linebuf);
 			getDOT();
 		}
