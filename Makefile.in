@@ -1,3 +1,4 @@
+VERSION=2.2
 #
 # Ex skeletal makefile for version 7
 #
@@ -26,33 +27,34 @@ LIBDIR=	${PREFIX}/libexec
 #
 # Either none or both of the next two lines needs to be uncommented
 #
-#D_SBRK=	-DUNIX_SBRK
-#MALLOC_O=mapmalloc.o
+D_SBRK=	-DUNIX_SBRK
+MALLOC_O=mapmalloc.o
 CTAGS=	/usr/ucb/ctags
-_CFLAGS=	-DTABS=8 -DLISP -DCHDIR -DUCVISUAL -Wall -Wextra \
+_CFLAGS=	-DTABS=8 -DLISP -DCHDIR -DUCVISUAL \
+	${D_SBRK} -DLIBDIR='"${LIBDIR}"' -Wall -Wextra \
 	-g -O0 -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls \
 	-fsanitize=undefined \
 	-fsanitize=integer \
 	-fsanitize=address
-_LDFLAGS=
+_LDFLAGS=-s
 OBJS=	ex.o ex_addr.o ex_cmds.o ex_cmds2.o ex_cmdsub.o ex_data.o ex_get.o \
 	ex_io.o ex_put.o ex_re.o ex_set.o ex_subr.o ex_temp.o ex_tty.o \
 	ex_v.o ex_vadj.o ex_vget.o ex_vmain.o ex_voperate.o \
 	ex_vops.o ex_vops2.o ex_vops3.o ex_vput.o ex_vwind.o \
-	3printf.o
+	3printf.o ${MALLOC_O}
 
 all: a.out exrecover expreserve #tags
 
 tags:
 	${CTAGS} ex.c ex_*.c
 
-${OBJS}: ex_vars.h ex.h
+${OBJS}: ex_vars.h ex.h ex_tty.h
 
 #ex_vars.h:
 #	csh makeoptions ${_CFLAGS}
 
 a.out: ${OBJS}
-	${CC} ${CFLAGS} ${_CFLAGS} ${LDFLAGS} ${_LDFLAGS} ${OBJS} -ltinfo
+	${CC} ${CFLAGS} ${_CFLAGS} ${LDFLAGS} ${_LDFLAGS} ${OBJS} ${TERMLIB}
 
 exrecover: exrecover.o
 	${CC} ${CFLAGS} ${_CFLAGS} ${LDFLAGS} ${_LDFLAGS} -o $@ exrecover.o
@@ -61,7 +63,7 @@ expreserve: expreserve.o
 	${CC} ${CFLAGS} ${_CFLAGS} ${LDFLAGS} ${_LDFLAGS} -o $@ expreserve.o
 
 .c.o:
-	${CC} ${CFLAGS} -c $<
+	${CC} ${CFLAGS} ${_CFLAGS} -c $<
 
 clean:
 	-rm -f a.out exrecover expreserve ex2.0strings strings core trace tags

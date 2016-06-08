@@ -264,7 +264,7 @@ setCNL()
 {
 
 	setcount();
-	newline();
+	ex_newline();
 }
 
 setNAEOL()

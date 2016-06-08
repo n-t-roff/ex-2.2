@@ -244,7 +244,7 @@ move()
 	adt = address();
 	if (adt == 0)
 		serror("%s where?|%s requires a trailing address", Command);
-	newline();
+	ex_newline();
 	move1(iscopy, adt);
 	killed();
 }
@@ -614,7 +614,7 @@ zop(hadpr)
 		lines = op == EOF ? value(SCROLL) : excl ? LINES - 1 : value(WINDOW);
 	if (inopen || c != EOF) {
 		ungetchar(c);
-		newline();
+		ex_newline();
 	}
 	addr1 = addr2;
 	setdot();

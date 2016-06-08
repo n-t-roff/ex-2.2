@@ -1256,7 +1256,8 @@ tfixnl()
 	trubble = 0, techoin = 0;
 }
 
-tvliny()
+void
+tvliny(void)
 {
 	register int i;
 

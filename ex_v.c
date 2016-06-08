@@ -70,7 +70,7 @@ oop()
 		getDOT();
 		ic = vskipwh(linebuf);
 	}
-	newline();
+	ex_newline();
 
 	/*
 	 * If overstrike then have to HARDOPEN
@@ -186,7 +186,7 @@ toopen:
 	pastwh();
 	vsetsiz(isdigit(peekchar()) ? getnum() : value(WINDOW));
 	setwind();
-	newline();
+	ex_newline();
 	vok(atube);
 	if (!inglobal)
 		savevis();

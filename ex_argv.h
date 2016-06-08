@@ -14,7 +14,7 @@ int	argc;
 int	argc0;
 int	morargc;		/* Used with "More files to edit..." */
 
-short	firstln;		/* From +lineno */
+int	firstln;		/* From +lineno */
 
 /* Yech... */
 struct	glob {

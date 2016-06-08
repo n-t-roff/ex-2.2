@@ -48,6 +48,7 @@
 #include <setjmp.h>
 #include <sys/stat.h>
 #include <termios.h>
+#include <fcntl.h>
 
 extern	int errno;
 
@@ -89,7 +90,7 @@ struct	option {
 #define	value(a)	options[a].ovalue
 #define	svalue(a)	options[a].osvalue
 
-struct	option options[NOPTS + 1];
+extern struct	option options[NOPTS + 1];
 
 
 /*
@@ -146,7 +147,7 @@ bool	die;			/* We are child, go away on error */
 short	dirtcnt;		/* When >= MAXDIRT, should sync temporary */
 bool	edited;			/* Current file is [Edited] */
 line	*endcore;		/* Last available core location */
-bool	endline;		/* Last cmd mode command ended with \n */
+extern bool	endline;		/* Last cmd mode command ended with \n */
 short	erfile;			/* Error message file unit */
 line	*fendcore;		/* First address in line pointer space */
 char	file[FNSIZE];		/* Working file name */
@@ -161,7 +162,7 @@ char	*input;			/* Current position in cmd line input buffer */
 bool	intag;			/* In tag file... force nomagic re's */
 bool	intty;			/* Input is a tty */
 short	io;			/* General i/o unit (auto-closed on error!) */
-short	lastc;			/* Last character ret'd from cmd input */
+extern short	lastc;			/* Last character ret'd from cmd input */
 bool	laste;			/* Last command was an "e" (or "rec") */
 char	lasttag[TAGSIZE];	/* Last argument to a tag command */
 char	*linebp;		/* Used in substituting in \n */
@@ -184,7 +185,7 @@ bool	ruptible;		/* Interruptible is normal state */
 bool	shudclob;		/* Have a prompt to clobber (e.g. on ^D) */
 int	status;			/* Status returned from wait() */
 short	tchng;			/* If nonzero, then [Modified] */
-short	tfile;			/* Temporary file unit */
+extern int	tfile;			/* Temporary file unit */
 bool	vcatch;			/* Want to catch an error (open/visual) */
 jmp_buf	vreslab;		/* For error throws to a visual catch */
 short	xchng;			/* Suppresses multiple "No writes" in !cmd */
@@ -215,9 +216,9 @@ short	xchng;			/* Suppresses multiple "No writes" in !cmd */
  * Environment like memory
  */
 char	altfile[FNSIZE];	/* Alternate file name */
-char	direct[ONMSZ];		/* Temp file goes here */
-char	shell[ONMSZ];		/* Copied to be settable */
-char	ttytype[ONMSZ];		/* A long and pretty name */
+extern char	direct[ONMSZ];		/* Temp file goes here */
+extern char	shell[ONMSZ];		/* Copied to be settable */
+extern char	ttytype[ONMSZ];		/* A long and pretty name */
 char	uxb[UXBSIZE + 2];	/* Last !command for !! */
 
 /*
@@ -275,9 +276,9 @@ line	*undadot;		/* If we saved all lines, dot reverts here */
 #define	NOSTR	(char *) 0
 #define	NOLINE	(line *) 0
 
-int	(*Outchar)();
-int	(*Pline)();
-int	(*Putchar)();
+extern int	(*Outchar)();
+extern int	(*Pline)();
+extern int	(*Putchar)();
 int	(*oldhup)();
 int	(*setlist())();
 int	(*setnorm())();
@@ -342,7 +343,7 @@ void	commands(bool, bool);
 void	vcontin(bool);
 void	resetflav(void);
 void	nomore(void);
-void	newline(void);
+void	ex_newline(void);
 void	zop2(int, int);
 void	tagfind(bool);
 void	source(char *, bool);
@@ -389,6 +390,7 @@ void	vshow(line *, line *);
 void	vdown(int, int, bool);
 void	vup(int, int, bool);
 void	ex_printf(const char *, ...);
+void	tvliny(void);
 
 /*
  * C doesn't have a (void) cast, so we have to fake it for lint's sake.

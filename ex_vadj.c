@@ -390,6 +390,9 @@ vmoveitup(int cnt)
 		tfixnl(), fprintf(trace, "vmoveitup(%d)\n", cnt);
 #endif
 	if (SF) {
+		destline = WECHO;
+		destcol = (NONL ? 0 : outcol % WCOLS);
+		fgoto();
 		while (cnt > 0)
 			vputp(SF, 0), cnt--;
 		return;

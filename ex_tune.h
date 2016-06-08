@@ -9,8 +9,8 @@
  * Only exstrings is looked at "+4", i.e. if you give
  * "/usr/lib/..." here, "/lib" will be tried only for strings.
  */
-#define	EXRECOVER	"/usr/lib/ex2.0recover"
-#define	EXPRESERVE	"/usr/lib/ex2.0preserve"
+#define	EXRECOVER	LIBDIR "/ex2.2recover"
+#define	EXPRESERVE	LIBDIR "/ex2.2preserve"
 #define	EXSTRINGS	"/usr/lib/ex2.0strings"
 #define	EXHELPDIR	"/usr/lib/how_ex"
 #define	MASTERTAGS	"/usr/lib/tags"

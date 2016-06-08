@@ -3,7 +3,6 @@
 #include "ex_temp.h"
 #include "ex_tty.h"
 
-#undef	BUFSIZ
 #undef	EOF
 
 #include <stdio.h>
@@ -54,6 +53,7 @@ char	mydir[] =	_PATH_PRESERVE;
 char	*ctime();
 char	nb[BUFSIZ];
 int	vercnt;			/* Count number of versions of file found */
+int	tfile;
 
 static void listfiles(char *);
 static void findtmp(char *);

@@ -138,7 +138,7 @@ notinvis:
 			tail("append");
 			setdot();
 			aiflag = exclam();
-			newline();
+			ex_newline();
 			deletenone();
 			setin(addr2);
 			ignore(append(gettty, addr2));
@@ -263,7 +263,7 @@ doecmd:
 			setdot();
 			nonzero();
 			aiflag = exclam();
-			newline();
+			ex_newline();
 			deletenone();
 			setin(addr2);
 			ignore(append(gettty, addr2 - 1));
@@ -278,7 +278,7 @@ doecmd:
 			c = exclam();
 			setcount();
 			nonzero();
-			newline();
+			ex_newline();
 			if (addr1 == addr2 && addr2 != dol)
 				addr2++;
 			join(c);
@@ -291,7 +291,7 @@ casek:
 			c = getchar();
 			if (endcmd(c))
 				serror("Mark what?|%s requires following letter", Command);
-			newline();
+			ex_newline();
 			if (!islower(c))
 				error("Bad mark|Mark must specify a letter");
 			setdot();
@@ -537,7 +537,7 @@ quit:
 			setnoaddr();
 			markDOT();
 			c = exclam();
-			newline();
+			ex_newline();
 			undo(c);
 			continue;
 
@@ -551,7 +551,7 @@ quit:
 				/* should use SCCS subst here */
 				ex_printf("Version 2.2, May 6, 1979"
 				    " (2BSD).  git "
-				    "160608 15:31"
+				    "160608 17:00"
 				    );
 				noonl();
 				continue;
@@ -646,7 +646,7 @@ numberit:
 
 /* = */
 		case '=':
-			newline();
+			ex_newline();
 			setall();
 			ex_printf("%d", lineno(addr2));
 			noonl();
