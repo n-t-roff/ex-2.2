@@ -10,6 +10,8 @@
  * which appears in the echo area.
  */
 
+static void addto(char *, char *);
+
 /*
  * Return the key.
  */
@@ -223,7 +225,8 @@ blewit:
  * the purposes of repeat, so copy it from
  * the working to the previous command buffer.
  */
-setLAST()
+void
+setLAST(void)
 {
 
 	if (vglobp)
@@ -240,8 +243,8 @@ setLAST()
  * If the insertion buffer oveflows, then destroy
  * the repeatability of the insert.
  */
-addtext(cp)
-	char *cp;
+void
+addtext(char *cp)
 {
 
 	if (vglobp)
@@ -273,8 +276,8 @@ setBUF(BUF)
 	*wp = c;
 }
 
-addto(buf, str)
-	register char *buf, *str;
+static void
+addto(char *buf, char *str)
 {
 
 	if ((buf[0] & (QUOTE|TRIM)) == OVERBUF)

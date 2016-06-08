@@ -31,7 +31,7 @@
  */
 /* FNSIZE is also defined in expreserve.c */
 #define	FNSIZE		128		/* File name size */
-#define	LBSIZE		512		/* Line length */
+#define	LBSIZE		1024		/* Line length */
 #define	ESIZE		128		/* Size of compiled re */
 #define	RHSSIZE		256		/* Size of rhs of substitute */
 #define	NBRA		9		/* Number of re \( \) pairs */
@@ -66,8 +66,8 @@
  * terminals like adm3's (glass tty's) where it switches to pseudo
  * hardcopy mode when a line gets longer than 80 characters.
  */
-#define	TUBELINES	100	/* Number of screen lines for visual */
-#define	TUBECOLS	300	/* Number of screen columns for visual */
+#define	TUBELINES	150	/* Number of screen lines for visual */
+#define	TUBECOLS	400	/* Number of screen columns for visual */
 #define	TUBESIZE	(TUBELINES * TUBECOLS)	/* Maximum screen size for visual */
 
 /*

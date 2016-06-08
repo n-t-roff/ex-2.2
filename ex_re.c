@@ -7,6 +7,9 @@
  * Very similar to ed, with some re extensions and
  * confirmed substitute.
  */
+
+static void snote(int, int);
+
 global(k)
 	bool k;
 {
@@ -418,8 +421,8 @@ place(sp, l1, l2)
 	return (sp);
 }
 
-snote(total, lines)
-	register int total, lines;
+static void
+snote(int total, int lines)
 {
 
 	if (!notable(total))

@@ -10,13 +10,16 @@
 #define	READ	0
 #define	WRITE	1
 
+static void rbflush(void);
+
 char	tfname[40];
 char	rfname[40];
 int	havetmp;
 short	tfile = -1;
 short	rfile = -1;
 
-fileinit()
+void
+fileinit(void)
 {
 	register char *p;
 	register int i, j;
@@ -123,9 +126,6 @@ putline()
 	return (tl);
 }
 
-int	read();
-int	write();
-
 char *
 getblock(atl, iof)
 	line atl;
@@ -189,7 +189,8 @@ blkio(b, buf, iofcn)
  * Synchronize the state of the temporary file in case
  * a crash occurs.
  */
-synctmp()
+void
+synctmp(void)
 {
 	register int cnt;
 	register line *bp, *a;
@@ -517,7 +518,8 @@ YANKline()
 		*rbufcp = 0;
 }
 
-rbflush()
+static void
+rbflush(void)
 {
 	register struct strreg *sp = strp;
 

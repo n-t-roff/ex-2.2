@@ -39,10 +39,11 @@
  * of additional terminal descriptions you add to the termcap data base.
  */
 
+#include <string.h>
+#include <unistd.h>
 #include <sys/types.h>
 #include <ctype.h>
 #include <errno.h>
-#include <sgtty.h>
 #include <signal.h>
 #include <setjmp.h>
 #include <sys/stat.h>
@@ -50,7 +51,7 @@
 
 extern	int errno;
 
-typedef	short	line;
+typedef	int	line;
 typedef	short	bool;
 
 #include "ex_tune.h"
@@ -112,8 +113,7 @@ struct	option options[NOPTS + 1];
 #	undef	putchar
 #	undef	getchar
 #else
-#	define	BUFSIZ	512
-#	define	NULL	0
+#	define	BUFSIZ	1024
 #	define	EOF	-1
 #endif
 
@@ -127,7 +127,9 @@ struct	option options[NOPTS + 1];
  */
 #define	QUOTE	0200
 #define	TRIM	0177
+#ifndef CTRL
 #define	CTRL(c)	(c & 037)
+#endif
 #define	NL	CTRL('j')
 #define	CR	CTRL('m')
 #define	DELETE	0177		/* See also ATTN, QUIT in ex_tune.h */
@@ -213,9 +215,9 @@ short	xchng;			/* Suppresses multiple "No writes" in !cmd */
  * Environment like memory
  */
 char	altfile[FNSIZE];	/* Alternate file name */
-char	direct[32];		/* Temp file goes here */
-char	shell[32];		/* Copied to be settable */
-char	ttytype[16];		/* A long and pretty name */
+char	direct[ONMSZ];		/* Temp file goes here */
+char	shell[ONMSZ];		/* Copied to be settable */
+char	ttytype[ONMSZ];		/* A long and pretty name */
 char	uxb[UXBSIZE + 2];	/* Last !command for !! */
 
 /*
@@ -239,7 +241,6 @@ line	*one;			/* First line */
 line	*truedol;		/* End of all lines, including saves */
 line	*unddol;		/* End of undo saved lines */
 line	*zero;			/* Points to empty slot before one */
-int	linelimit;
 
 /*
  * Undo information
@@ -306,11 +307,10 @@ char	*vgetline();
 char	*vinit();
 char	*vpastwh();
 char	*vskipwh();
-int	put();
+void	put(void);
 int	putreg();
 int	YANKreg();
 int	delete();
-int	execl();
 int	filter();
 int	getfile();
 int	getsub();
@@ -318,7 +318,6 @@ int	gettty();
 int	join();
 int	listchar();
 off_t	lseek();
-int	normchar();
 int	normline();
 int	numbline();
 int	(*oldquit)();
@@ -327,16 +326,69 @@ int	onintr();
 int	putch();
 int	shift();
 int	termchar();
-int	vfilter();
+void	vfilter(void);
 #ifndef V6
 int	vintr();
 #endif
 int	vputch();
-int	vshftop();
+void	vshftop(void);
 int	yank();
 struct termios ostart(void);
 struct termios setty(struct termios);
 struct termios unixex(char *, char *, int, int);
+void	setall(void);
+void	setcount(void);
+void	commands(bool, bool);
+void	vcontin(bool);
+void	resetflav(void);
+void	nomore(void);
+void	newline(void);
+void	zop2(int, int);
+void	tagfind(bool);
+void	source(char *, bool);
+void	putfile(void);
+void	filename(int);
+void	pstop(void);
+void	pstart(void);
+void	fgoto(void);
+void	set(void);
+void	merror(char *);
+void	imerror(char *, int);
+void	smerror(char *, char *);
+void	reverse(line *, line *);
+void	netchange(int);
+void	killcnt(int);
+void	synctmp(void);
+void	fileinit(void);
+void	gettmode(void);
+void	vsetsiz(int);
+void	savevis(void);
+void	vop(void);
+void	vdirty(int, int);
+void	sethard(void);
+void	vreplace(int, int, int);
+void	vsync1(int);
+void	vredraw(int);
+void	vrepaint(char *);
+void	vscrap(void);
+void	vmoveitup(int);
+void	addtext(char *);
+void	setLAST(void);
+void	vsave(void);
+void	vmain(void);
+void	operate(int, int);
+void	vrep(int);
+void	vundo(void);
+void	vUndo(void);
+void	takeout(char *);
+void	physdc(int, int);
+void	vgoto(int, int);
+void	vclrech(bool);
+void	vclreol(void);
+void	vshow(line *, line *);
+void	vdown(int, int, bool);
+void	vup(int, int, bool);
+void	printf(const char *, ...);
 
 /*
  * C doesn't have a (void) cast, so we have to fake it for lint's sake.

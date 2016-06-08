@@ -8,6 +8,8 @@
  * Random routines, in alphabetical order.
  */
 
+static void qcount(int);
+
 any(c, s)
 	int c;
 	register char *s;
@@ -214,8 +216,8 @@ killed()
 	killcnt(addr2 - addr1 + 1);
 }
 
-killcnt(cnt)
-	register int cnt;
+void
+killcnt(int cnt)
 {
 
 	if (inopen) {
@@ -314,14 +316,14 @@ mesg(str)
 	return (str);
 }
 
+void
+merror(char *s) {
+	imerror(s, 0);
+}
+
 /*VARARGS2*/
-merror(seekpt, i)
-#ifdef lint
-	char *seekpt;
-#else
-	int seekpt;
-#endif
-	int i;
+void
+imerror(char *seekpt, int i)
 {
 	register char *cp = linebuf;
 
@@ -355,7 +357,14 @@ merror1(seekpt)
 morelines()
 {
 
+#ifdef UNIX_SBRK
+	if ((int) sbrk(1024 * sizeof (line)) == -1)
+		return (-1);
+	endcore += 1024;
+	return (0);
+#else
 	return (-1);
+#endif
 }
 
 nonzero()
@@ -390,8 +399,8 @@ netchHAD(cnt)
 	netchange(lineDOL() - cnt);
 }
 
-netchange(i)
-	register int i;
+void
+netchange(int i)
 {
 	register char *cp;
 
@@ -438,7 +447,6 @@ plural(i)
 	return (i == 1 ? "" : "s");
 }
 
-int	qcount();
 short	vcntcol;
 
 qcolumn(lim, gp)
@@ -462,9 +470,8 @@ qcolumn(lim, gp)
 	return (vcntcol);
 }
 
-int
-qcount(c)
-	int c;
+static void
+qcount(int c)
 {
 
 	if (c == '\t') {
@@ -474,8 +481,8 @@ qcount(c)
 	vcntcol++;
 }
 
-reverse(a1, a2)
-	register line *a1, *a2;
+void
+reverse(line *a1, line *a2)
 {
 	register line t;
 
@@ -530,7 +537,7 @@ span()
 	return (addr2 - addr1 + 1);
 }
 
-sync()
+ex_sync()
 {
 
 	chng = 0;
@@ -552,13 +559,8 @@ skipwh()
 }
 
 /*VARARGS2*/
-smerror(seekpt, cp)
-#ifdef lint
-	char *seekpt;
-#else
-	int seekpt;
-#endif
-	char *cp;
+void
+smerror(char *seekpt, char *cp)
 {
 
 	if (seekpt == 0)

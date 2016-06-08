@@ -18,8 +18,8 @@ char	vscandir[2] =	{ '/', 0 };
  * and if wcursor is zero, then the first non-blank location of the
  * other line is implied.
  */
-operate(c, cnt)
-	register int c, cnt;
+void
+operate(int c, int cnt)
 {
 	register int i;
 	int (*moveop)(), (*deleteop)();

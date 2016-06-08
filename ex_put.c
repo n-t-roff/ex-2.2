@@ -9,6 +9,10 @@
  * line numbering and the like).
  */
 
+static void normchar(int);
+static void slobber(int);
+static void putS(char *);
+
 /*
  * The routines outchar, putchar and pline are actually
  * variables, and these variables point at the current definitions
@@ -84,8 +88,8 @@ listchar(c)
  * Format c for printing.  Handle funnies of upper case terminals
  * and crocky hazeltines which don't have ~.
  */
-normchar(c)
-	register short c;
+static void
+normchar(int c)
 {
 	register char *colp;
 
@@ -160,8 +164,8 @@ normline()
  * the printing of the line will erase or otherwise obliterate
  * the prompt which was printed before.  If it won't, do it now.
  */
-slobber(c)
-	int c;
+static void
+slobber(int c)
 {
 
 	shudclob = 0;
@@ -328,7 +332,8 @@ flush2()
  * column position implied by wraparound or the lack thereof and
  * rolling up the screen to get destline on the screen.
  */
-fgoto()
+void
+fgoto(void)
 {
 	register int l, c;
 
@@ -605,8 +610,8 @@ putnl()
 	putchar('\n');
 }
 
-putS(cp)
-	char *cp;
+static void
+putS(char *cp)
 {
 
 	if (cp == NULL)
@@ -686,7 +691,8 @@ putNFL()
 /*
  * Try to start -nl mode.
  */
-pstart()
+void
+pstart(void)
 {
 
 	if (NONL)
@@ -712,7 +718,8 @@ pstart()
 /*
  * Stop -nl mode.
  */
-pstop()
+void
+pstop(void)
 {
 
 	if (inopen)

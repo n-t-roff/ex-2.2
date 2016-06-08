@@ -6,15 +6,15 @@
  * The option #defines in ex_vars.h are made
  * from this file by the script makeoptions.
  */
-char	direct[32] =
+char	direct[ONMSZ] =
 	{ '/', 't', 'm', 'p' };
-char	sections[32] =
+char	sections[ONMSZ] =
 	{ 'N', 'H', 'S', 'H' };
-char	paragraphs[32] =
+char	paragraphs[ONMSZ] =
 	{ 'I', 'P', 'L', 'P', 'P', 'P', 'Q', 'P', 'b', 'p' };
-char	shell[32] =
+char	shell[ONMSZ] =
 	{ '/', 'b', 'i', 'n', '/', 's', 'h' };
-char	ttytype[16] =
+char	ttytype[ONMSZ] =
 	{ 'd', 'u', 'm', 'b' };
 
 short	COLUMNS = 80;

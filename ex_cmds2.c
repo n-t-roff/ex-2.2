@@ -5,6 +5,9 @@
 #include "ex_tty.h"
 #include "ex_vis.h"
 
+static void error0(void);
+static void setflav(void);
+
 bool	pflag, nflag;
 int	poffset;
 
@@ -71,7 +74,7 @@ error(str, i)
 {
 
 	error0();
-	merror(str, i);
+	imerror(str, i);
 	error1(str);
 }
 
@@ -99,7 +102,8 @@ erewind()
  * just fixing up the echo area for the print.
  * Otherwise we reset a number of externals, and discard unused input.
  */
-error0()
+static void
+error0(void)
 {
 
 	intag = 0;
@@ -121,7 +125,7 @@ error0()
 	resetflav();
 	if (laste) {
 		laste = 0;
-		sync();
+		ex_sync();
 	}
 	if (!SO || !SE)
 		dingdong();
@@ -240,7 +244,8 @@ next()
  * Eat trailing flags and offsets after a command,
  * saving for possible later post-command prints.
  */
-newline()
+void
+newline(void)
 {
 	register int c;
 
@@ -290,13 +295,14 @@ newline()
  * Before quit or respec of arg list, check that there are
  * no more files in the arg list.
  */
-nomore()
+void
+nomore(void)
 {
 
 	if (argc == 0 || morargc == argc)
 		return;
 	morargc = argc;
-	merror("%d more file", argc);
+	imerror("%d more file", argc);
 	serror("%s@to edit", plural((long) argc));
 }
 
@@ -322,7 +328,8 @@ quickly()
 /*
  * Reset the flavor of the output to print mode with no numbering.
  */
-resetflav()
+void
+resetflav(void)
 {
 
 	if (inopen)
@@ -358,7 +365,8 @@ serror(str, cp)
  * and either use normally decoded (ARPAnet standard) characters or list mode,
  * where end of lines are marked and tabs print as ^I.
  */
-setflav()
+static void
+setflav(void)
 {
 
 	if (inopen)
@@ -446,8 +454,8 @@ ret:
 /*
  * Continue after a shell escape from open/visual.
  */
-vcontin(ask)
-	bool ask;
+void
+vcontin(bool ask)
 {
 
 	if (vcnt > 0)
