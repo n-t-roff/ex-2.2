@@ -27,12 +27,13 @@ LIBDIR=	${PREFIX}/libexec
 #
 # Either none or both of the next two lines needs to be uncommented
 #
-D_SBRK=	-DUNIX_SBRK
-MALLOC_O=mapmalloc.o
+#D_SBRK=	-DUNIX_SBRK
+#MALLOC_O=mapmalloc.o
+#
 CTAGS=	/usr/ucb/ctags
 _CFLAGS=	-DTABS=8 -DLISP -DCHDIR -DUCVISUAL \
-	${D_SBRK} -DLIBDIR='"${LIBDIR}"' -Wall -Wextra \
-	-g -O0 -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls
+	${D_SBRK} -DLIBDIR='"${LIBDIR}"' #-Wall -Wextra \
+#	-g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls \
 #	-fsanitize=undefined \
 #	-fsanitize=integer \
 #	-fsanitize=address

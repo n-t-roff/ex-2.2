@@ -500,7 +500,7 @@ badtags:
 				 */
 				names['t'-'a'] = *dot &~ 01;
 				if (inopen) {
-					extern char *ncols['z'-'a'+1];
+					extern char *ncols['z'-'a'+2];
 					extern char *cursor;
 
 					ncols['t'-'a'] = cursor;

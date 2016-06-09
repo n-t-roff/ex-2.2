@@ -9,6 +9,7 @@
  */
 
 static void qcount(int);
+static void merror1(char *);
 
 any(c, s)
 	int c;
@@ -341,12 +342,8 @@ imerror(char *seekpt, int i)
 		putpad(SE);
 }
 
-merror1(seekpt)
-#ifdef lint
-	char *seekpt;
-#else
-	int seekpt;
-#endif
+static void
+merror1(char *seekpt)
 {
 
 	strcpy(linebuf, seekpt);

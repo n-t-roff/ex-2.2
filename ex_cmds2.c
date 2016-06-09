@@ -8,8 +8,8 @@
 static void error0(void);
 static void setflav(void);
 
-bool	pflag, nflag;
-int	poffset;
+extern bool	pflag, nflag;
+extern int	poffset;
 
 /*
  * Subroutines for major command loop.

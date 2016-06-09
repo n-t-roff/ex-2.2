@@ -91,7 +91,7 @@ short	destline;
 
 struct	termios tty;		/* Always stty/gtty using this one structure */
 bool	normtty;		/* Have to restor normal mode from normf */
-struct	termios	normf;			/* Restore tty flags to this (someday) */
+struct	termios normf;			/* Restore tty flags to this (someday) */
 
 short	WBOT;
 short	WECHO;

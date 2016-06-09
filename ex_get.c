@@ -105,7 +105,7 @@ top:
 		input = in_line;
 		goto top;
 	}
-	if (read(0, (char *) in_line, 1) != 1)
+	if (read(0, in_line, 1) != 1)
 		lastc = EOF;
 	lastc = *in_line;
 	return (lastc);

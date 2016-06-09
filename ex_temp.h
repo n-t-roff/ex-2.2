@@ -25,14 +25,14 @@
  * space in the temp file with (then) no waste.  This would double core
  * requirements and would probably require some editor debugging.
  */
-#define	BLKMSK	0777		/* 01777 */
-#define	BNDRY	8		/* 16 */
-#define	INCRMT	0200		/* 0100 */
-#define	LBTMSK	0770		/* 0760 */
-#define	NMBLKS	506		/* 1018 */
-#define	OFFBTS	7		/* 6 */
-#define	OFFMSK	0177		/* 077 */
-#define	SHFT	2		/* 3 */
+#define	BLKMSK	077777
+#define	BNDRY	2
+#define	INCRMT	02000
+#define	LBTMSK	01776
+#define	NMBLKS	077770
+#define	OFFBTS	10
+#define	OFFMSK	01777
+#define	SHFT	0
 
 /*
  * The editor uses three buffers into the temporary file (ed uses two
@@ -54,12 +54,12 @@
 bool	hitin2;			/* Last read hit was ibuff2 not ibuff */
 bool	ichang2;		/* Have actually changed ibuff2 */
 bool	ichanged;		/* Have actually changed ibuff */
-short	iblock;			/* Temp file block number of ibuff (or -1) */
-short	iblock2;		/* Temp file block number of ibuff2 (or -1) */
-short	ninbuf;			/* Number useful chars left in input buffer */
-short	nleft;			/* Number usable chars left in output buffer */
-short	oblock;			/* Temp file block number of obuff (or -1) */
-short	tline;			/* Current temp file ptr */
+int	iblock;			/* Temp file block number of ibuff (or -1) */
+int	iblock2;		/* Temp file block number of ibuff2 (or -1) */
+int	ninbuf;			/* Number useful chars left in input buffer */
+int	nleft;			/* Number usable chars left in output buffer */
+int	oblock;			/* Temp file block number of obuff (or -1) */
+int	tline;			/* Current temp file ptr */
 
 char	ibuff[BUFSIZ];
 char	ibuff2[BUFSIZ];
@@ -82,8 +82,8 @@ char	obuff[BUFSIZ];
 /* This definition also appears in expreserve.c... beware */
 struct 	header {
 	time_t	Time;			/* Time temp file last updated */
-	short	Uid;
-	short	Flines;			/* Number of lines in file */
+	uid_t	Uid;
+	int	Flines;			/* Number of lines in file */
 	char	Savedfile[FNSIZE];	/* The current file name */
 	short	Blocks[LBLKS];		/* Blocks where line pointers stashed */
 } H;

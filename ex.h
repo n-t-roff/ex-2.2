@@ -142,14 +142,16 @@ extern struct	option options[NOPTS + 1];
  */
 bool	aiflag;			/* Append/change/insert with autoindent */
 bool	anymarks;		/* We have used '[a-z] */
-short	chng;			/* Warn "No write" */
+int	chng;			/* Warn "No write" */
 char	*Command;
 bool	die;			/* We are child, go away on error */
-short	dirtcnt;		/* When >= MAXDIRT, should sync temporary */
+int	dirtcnt;		/* When >= MAXDIRT, should sync temporary */
 bool	edited;			/* Current file is [Edited] */
 line	*endcore;		/* Last available core location */
 extern bool	endline;		/* Last cmd mode command ended with \n */
+#if 0
 short	erfile;			/* Error message file unit */
+#endif
 line	*fendcore;		/* First address in line pointer space */
 char	file[FNSIZE];		/* Working file name */
 char	genbuf[LBSIZE];		/* Working buffer when manipulating linebuf */
@@ -172,7 +174,7 @@ bool	listf;			/* Command should run in list mode */
 char	*loc1;			/* Where re began to match (in linebuf) */
 char	*loc2;			/* First char after re match (") */
 line	names['z'-'a'+2];	/* Mark registers a-z,' */
-short	notecnt;		/* Count for notify (to visual from cmd) */
+int	notecnt;		/* Count for notify (to visual from cmd) */
 bool	numberf;		/* Command should run in number mode */
 char	obuf[BUFSIZ];		/* Buffer for tty output */
 speed_t	ex_ospeed;			/* Output speed (from gtty) */
@@ -185,11 +187,11 @@ int	rpid;			/* Pid returned from wait() */
 bool	ruptible;		/* Interruptible is normal state */
 bool	shudclob;		/* Have a prompt to clobber (e.g. on ^D) */
 int	status;			/* Status returned from wait() */
-short	tchng;			/* If nonzero, then [Modified] */
+int	tchng;			/* If nonzero, then [Modified] */
 extern int	tfile;			/* Temporary file unit */
 bool	vcatch;			/* Want to catch an error (open/visual) */
 jmp_buf	vreslab;		/* For error throws to a visual catch */
-short	xchng;			/* Suppresses multiple "No writes" in !cmd */
+int	xchng;			/* Suppresses multiple "No writes" in !cmd */
 
 /*
  * Macros
@@ -335,9 +337,11 @@ int	vintr();
 int	vputch();
 void	vshftop(void);
 int	yank();
-struct termios ostart(void);
+void	ostop(struct termios);
 struct termios setty(struct termios);
 struct termios unixex(char *, char *, int, int);
+struct termios ostart(void);
+void	unixwt(bool, struct termios);
 void	setall(void);
 void	setcount(void);
 void	commands(bool, bool);

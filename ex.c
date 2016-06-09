@@ -428,12 +428,3 @@ preserve()
 		return (1);
 	return (0);
 }
-
-#ifndef V6
-exit(i)
-	int i;
-{
-
-	_exit(i);
-}
-#endif

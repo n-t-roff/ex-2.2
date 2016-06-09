@@ -13,8 +13,8 @@
  * Following remember where . was in the previous file for return
  * on file switching.
  */
-short	altdot;
-short	oldadot;
+int	altdot;
+int	oldadot;
 bool	wasalt;
 
 long	cntch;			/* Count of characters on unit io */
@@ -452,7 +452,9 @@ wop()
 			error(" Use \"w!\" to write partial buffer");
 		}
 cre:
+/*
 		synctmp();
+*/
 #ifdef V6
 		io = creat(file, 0644);
 #else
@@ -655,7 +657,9 @@ unixex(char *opt, char *up, int newstdin, int mode)
 			close(io);
 		if (tfile)
 			close(tfile);
+#if 0
 		close(erfile);
+#endif
 		signal(SIGHUP, oldhup);
 		signal(SIGQUIT, oldquit);
 		if (ruptible)
@@ -678,9 +682,8 @@ unixex(char *opt, char *up, int newstdin, int mode)
  * F is for restoration of tty mode if from open/visual.
  * C flags suppression of printing.
  */
-unixwt(c, f)
-	bool c;
-	struct termios f;
+void
+unixwt(bool c, struct termios f)
 {
 
 	waitfor();

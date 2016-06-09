@@ -763,8 +763,8 @@ ostart(void)
 /*
  * Stop open, restoring tty modes.
  */
-ostop(f)
-	struct termios f;
+void
+ostop(struct termios f)
 {
 
 	pfast = (f.c_oflag & ONLCR) == 0;

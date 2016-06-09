@@ -32,7 +32,7 @@
 /* FNSIZE is also defined in expreserve.c */
 #define	FNSIZE		128		/* File name size */
 #define	LBSIZE		1024		/* Line length */
-#define	ESIZE		128		/* Size of compiled re */
+#define	ESIZE		512		/* Size of compiled re */
 #define	RHSSIZE		256		/* Size of rhs of substitute */
 #define	NBRA		9		/* Number of re \( \) pairs */
 #define	TAGSIZE		32		/* Tag length */
@@ -53,8 +53,8 @@
  * of the incore line information and could then
  * be reasonably large.
  */
-#define	NARGS	100		/* Maximum number of names in "next" */
-#define	NCARGS	LBSIZE		/* Maximum arglist chars in "next" */
+#define	NCARGS	5120		/* Maximum arglist chars in "next" */
+#define	NARGS	(NCARGS/6)		/* Maximum number of names in "next" */
 
 /*
  * Note: because the routine "alloca" is not portable, TUBESIZE

@@ -25,13 +25,13 @@ fileinit(void)
 	register int i, j;
 	struct stat stbuf;
 
-	if (tline == INCRMT * 3)
+	if (tline == INCRMT * 4)
 		return;
 	cleanup(0);
 	close(tfile);
-	tline = INCRMT * 3;
-	blocks[0] = 1;
-	blocks[1] = 2;
+	tline = INCRMT * 4;
+	blocks[0] = 2;
+	blocks[1] = 3;
 	blocks[2] = -1;
 	dirtcnt = 0;
 	iblock = -1;
@@ -180,7 +180,7 @@ blkio(b, buf, iofcn)
 	int (*iofcn)();
 {
 
-	lseek(tfile, (long) (unsigned) b * BUFSIZ, 0);
+	lseek(tfile, b * BUFSIZ, 0);
 	if ((*iofcn)(tfile, buf, BUFSIZ) != BUFSIZ)
 		filioerr(tfname);
 }
@@ -193,7 +193,8 @@ void
 synctmp(void)
 {
 	register int cnt;
-	register line *bp, *a;
+	register line *a;
+	register short *bp;
 
 	if (dol == zero)
 		return;
@@ -216,7 +217,7 @@ synctmp(void)
 			oblock = *bp + 1;
 			bp[1] = -1;
 		}
-		lseek(tfile, (long) (unsigned) *bp * BUFSIZ, 0);
+		lseek(tfile, *bp * BUFSIZ, 0);
 		cnt = ((dol - a) + 2) * sizeof (line);
 		if (cnt > BUFSIZ)
 			cnt = BUFSIZ;
@@ -293,7 +294,7 @@ oops:
 		if (rfile < 0)
 			goto oops;
 	}
-	lseek(rfile, (long) b * BUFSIZ, 0);
+	lseek(rfile, b * BUFSIZ, 0);
 	if ((*iofcn)(rfile, rbuf, BUFSIZ) != BUFSIZ)
 		goto oops;
 	rblock = b;
@@ -304,7 +305,7 @@ REGblk()
 	register int i, j, m;
 
 	for (i = 0; i < sizeof rused / sizeof rused[0]; i++) {
-		m = rused[i] ^ 0177777;
+		m = (rused[i] ^ 0177777) & 0177777;
 		if (i == 0)
 			m &= ~1;
 		if (m != 0) {

@@ -28,13 +28,13 @@
  *      temporaries.
  */
 
-#define	LBLKS	125
+#define	LBLKS	900
 #define	FNSIZE	128
 
 struct 	header {
 	time_t	Time;			/* Time temp file last updated */
 	uid_t	Uid;			/* This users identity */
-	short	Flines;			/* Number of lines in file */
+	int	Flines;			/* Number of lines in file */
 	char	Savedfile[FNSIZE];	/* The current file name */
 	short	Blocks[LBLKS];		/* Blocks where line pointers stashed */
 } H;
@@ -175,7 +175,7 @@ format:
 #endif
 		goto format;
 	}
-	if (H.Blocks[0] != 1 || H.Blocks[1] != 2) {
+	if (H.Blocks[0] != 2 || H.Blocks[1] != 3) {
 #ifdef DEBUG
 		fprintf(stderr, "Blocks %d %d\n", H.Blocks[0], H.Blocks[1]);
 #endif
