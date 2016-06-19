@@ -24,6 +24,7 @@ VERSION=2.2
 PREFIX=	${DESTDIR}/usr/local
 BINDIR=	${PREFIX}/bin
 LIBDIR=	${PREFIX}/libexec
+SHAREDIR=${PREFIX}/share/ex/${VERSION}
 #
 # Either none or both of the next two lines needs to be uncommented
 #
@@ -31,12 +32,14 @@ LIBDIR=	${PREFIX}/libexec
 #MALLOC_O=mapmalloc.o
 #
 CTAGS=	/usr/ucb/ctags
+DBG_CFLAGS= \
+	-g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls \
+	-fsanitize=undefined \
+	-fsanitize=integer \
+	-fsanitize=address
 _CFLAGS=	-DTABS=8 -DLISP -DCHDIR -DUCVISUAL \
-	${D_SBRK} -DLIBDIR='"${LIBDIR}"' #-Wall -Wextra \
-#	-g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls \
-#	-fsanitize=undefined \
-#	-fsanitize=integer \
-#	-fsanitize=address
+	${D_SBRK} -DLIBDIR='"${LIBDIR}"' -Wall -Wextra \
+	#${DBG_CFLAGS}
 _LDFLAGS=-s
 OBJS=	ex.o ex_addr.o ex_cmds.o ex_cmds2.o ex_cmdsub.o ex_data.o ex_get.o \
 	ex_io.o ex_put.o ex_re.o ex_set.o ex_subr.o ex_temp.o ex_tty.o \
@@ -72,9 +75,9 @@ clean:
 	-rm -f *.o x*.[cs]
 
 distclean: clean
-	rm -rf Makefile config.log
+	rm -f Makefile config.log
 
-install: ${BINDIR} ${LIBDIR}
+install: ${BINDIR} ${LIBDIR} ${SHAREDIR}
 	install a.out ${BINDIR}/ex
 	for i in vi view edit; do \
 		ln -sf ${BINDIR}/ex ${BINDIR}/$$i; \
@@ -82,6 +85,8 @@ install: ${BINDIR} ${LIBDIR}
 	for i in recover preserve; do \
 		install ex$$i ${LIBDIR}/ex${VERSION}$$i; \
 	done
+	cp doc/vi/*.pdf ${SHAREDIR}/
+	chmod 644 ${SHAREDIR}/*.pdf
 
 uninstall:
 	for i in ex vi view edit; do \
@@ -90,8 +95,9 @@ uninstall:
 	for i in recover preserve; do \
 		rm -f ${LIBDIR}/ex${VERSION}$$i; \
 	done
+	rm -rf ${SHAREDIR}
 
-${BINDIR} ${LIBDIR}:
+${BINDIR} ${LIBDIR} ${SHAREDIR}:
 	mkdir -p $@
 
 lint:

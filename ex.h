@@ -308,7 +308,6 @@ char	*ttyname();
 line	*vback();
 char	*vfindcol();
 char	*vgetline();
-char	*vinit();
 char	*vpastwh();
 char	*vskipwh();
 void	put(void);

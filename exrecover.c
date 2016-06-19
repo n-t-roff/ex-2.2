@@ -39,6 +39,19 @@
 #endif
 
 /*
+ * Here we save the information about files, when
+ * you ask us what files we have saved for you.
+ * We buffer file name, number of lines, and the time
+ * at which the file was saved.
+ */
+struct svfile {
+	char	sf_name[FNSIZE + 1];
+	int	sf_lines;
+	char	sf_entry[MAXNAMLEN + 1];
+	time_t	sf_time;
+};
+
+/*
  * This directory definition also appears (obviously) in expreserve.c.
  * Change both if you change either.
  */
@@ -55,13 +68,14 @@ char	nb[BUFSIZ];
 int	vercnt;			/* Count number of versions of file found */
 int	tfile;
 
+static int qucmp(struct svfile *, struct svfile *);
+static void enter(struct svfile *, char *, int);
 static void listfiles(char *);
 static void findtmp(char *);
 static void searchdir(char *);
 
-main(argc, argv)
-	int argc;
-	char *argv[];
+int
+main(int argc, char **argv)
 {
 	register char *cp;
 	register int b, i;
@@ -112,10 +126,10 @@ main(argc, argv)
 	 */
 	b = 0;
 	while (H.Flines > 0) {
-		ignorl(lseek(tfile, (long) blocks[b] * BUFSIZ, 0));
+		ignorl(lseek(tfile, blocks[b] * BUFSIZ, 0));
 		i = H.Flines < BUFSIZ / sizeof (line) ?
 			H.Flines * sizeof (line) : BUFSIZ;
-		if (read(tfile, (char *) dot, i) != i) {
+		if (read(tfile, dot, i) != i) {
 			perror(nb);
 			exit(1);
 		}
@@ -158,7 +172,7 @@ main(argc, argv)
 	/*
 	 * Adieu.
 	 */
-	exit(0);
+	return 0;
 }
 
 /*
@@ -179,25 +193,12 @@ error(char *str)
 	exit(1);
 }
 
-/*
- * Here we save the information about files, when
- * you ask us what files we have saved for you.
- * We buffer file name, number of lines, and the time
- * at which the file was saved.
- */
-struct svfile {
-	char	sf_name[FNSIZE + 1];
-	int	sf_lines;
-	char	sf_entry[MAXNAMLEN + 1];
-	time_t	sf_time;
-};
-
 static void
 listfiles(char *dirname)
 {
 	DIR *dir;
 	struct dirent *dirent;
-	int ecount, qucmp();
+	int ecount;
 	register int f;
 	char *cp;
 	struct svfile *fp, svbuf[NENTRY];
@@ -288,9 +289,8 @@ listfiles(char *dirname)
 /*
  * Enter a new file into the saved file information.
  */
-enter(fp, fname, count)
-	struct svfile *fp;
-	char *fname;
+static void
+enter(struct svfile *fp, char *fname, int count)
 {
 	register char *cp, *cp2;
 	register struct svfile *f, *fl;
@@ -333,8 +333,8 @@ enter(fp, fname, count)
  * Do the qsort compare to sort the entries first by file name,
  * then by modify time.
  */
-qucmp(p1, p2)
-	struct svfile *p1, *p2;
+static int
+qucmp(struct svfile *p1, struct svfile *p2)
 {
 	register int t;
 
