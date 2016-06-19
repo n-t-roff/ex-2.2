@@ -30,7 +30,7 @@ All generated files are removed with
 ```sh
 $ make distclean
 ```
-## Features which had been invented after version 2.2:
+## Features which had been invented after version 2.2
 
 * `j`, `k`, `l`.
   Use the alternative commands for cursor motions:
@@ -49,6 +49,11 @@ $ make distclean
   If you need to comment something in `~/.exrc`,
   put these lines to the end of the file
   and insert an empty line before them.
+* The documents
+  [viin.pdf](http://n-t-roff.github.io/ex/2.2/viin.pdf)
+  and
+  [viapp.pdf](http://n-t-roff.github.io/ex/2.2/viapp.pdf)
+  describe vi version 2.2 in detail.
 
 **Attention**:
 The original `vi` had not been 8-bit clean!
