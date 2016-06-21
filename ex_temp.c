@@ -61,7 +61,7 @@ dumbness:
 		goto dumbness;
 	havetmp = 1;
 	close(tfile);
-	tfile = open(tfname, 2);
+	tfile = open(tfname, O_RDWR);
 	if (tfile < 0)
 		goto dumbness;
 /* 	brk((char *)fendcore); */
@@ -180,7 +180,7 @@ blkio(b, buf, iofcn)
 	int (*iofcn)();
 {
 
-	lseek(tfile, b * BUFSIZ, 0);
+	lseek(tfile, b * BUFSIZ, SEEK_SET);
 	if ((*iofcn)(tfile, buf, BUFSIZ) != BUFSIZ)
 		filioerr(tfname);
 }
@@ -217,7 +217,7 @@ synctmp(void)
 			oblock = *bp + 1;
 			bp[1] = -1;
 		}
-		lseek(tfile, *bp * BUFSIZ, 0);
+		lseek(tfile, *bp * BUFSIZ, SEEK_SET);
 		cnt = ((dol - a) + 2) * sizeof (line);
 		if (cnt > BUFSIZ)
 			cnt = BUFSIZ;
@@ -229,7 +229,7 @@ oops:
 		*zero = 0;
 	}
 	flines = lineDOL();
-	lseek(tfile, 0l, 0);
+	lseek(tfile, 0l, SEEK_SET);
 	if (write(tfile, (char *) &H, sizeof H) != sizeof H)
 		goto oops;
 }
@@ -290,11 +290,11 @@ regio(b, iofcn)
 oops:
 			filioerr(rfname);
 		close(rfile);
-		rfile = open(rfname, 2);
+		rfile = open(rfname, O_RDWR);
 		if (rfile < 0)
 			goto oops;
 	}
-	lseek(rfile, b * BUFSIZ, 0);
+	lseek(rfile, b * BUFSIZ, SEEK_SET);
 	if ((*iofcn)(rfile, rbuf, BUFSIZ) != BUFSIZ)
 		goto oops;
 	rblock = b;

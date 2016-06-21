@@ -126,7 +126,7 @@ main(int argc, char **argv)
 	 */
 	b = 0;
 	while (H.Flines > 0) {
-		ignorl(lseek(tfile, blocks[b] * BUFSIZ, 0));
+		ignorl(lseek(tfile, blocks[b] * BUFSIZ, SEEK_SET));
 		i = H.Flines < BUFSIZ / sizeof (line) ?
 			H.Flines * sizeof (line) : BUFSIZ;
 		if (read(tfile, dot, i) != i) {
@@ -233,7 +233,7 @@ listfiles(char *dirname)
 		 * If not, then don't bother with this file, it can't
 		 * be ours.
 		 */
-		f = open(dirent->d_name, 0);
+		f = open(dirent->d_name, O_RDONLY);
 		if (f < 0) {
 #ifdef DEBUG
 			fprintf(stderr, "open failed\n");
@@ -383,7 +383,7 @@ findtmp(char *dir)
 		 */
 		tfile = bestfd;
 		CP(nb, bestnb);
-		ignorl(lseek(tfile, 0l, 0));
+		ignorl(lseek(tfile, 0l, SEEK_SET));
 
 		/*
 		 * Gotta be able to read the header or fall through
@@ -466,7 +466,7 @@ yeah(name)
 	char *name;
 {
 
-	tfile = open(name, 2);
+	tfile = open(name, O_RDWR);
 	if (tfile < 0)
 		return (0);
 	if (read(tfile, (char *) &H, sizeof H) != sizeof H) {
@@ -483,7 +483,7 @@ nope:
 	 * puts a word LOST in the header block, so that lost lines
 	 * can be made to point at it.
 	 */
-	ignorl(lseek(tfile, 504l, 0));
+	ignorl(lseek(tfile, 504l, SEEK_SET));
 	ignore(write(tfile, "LOST", 5));
 	return (1);
 }
@@ -529,7 +529,7 @@ scrapbad()
 	 * if the last block is.
 	 */
 	while (bno > 0) {
-		ignorl(lseek(tfile, (long) BUFSIZ * bno, 0));
+		ignorl(lseek(tfile, (long) BUFSIZ * bno, SEEK_SET));
 		cnt = read(tfile, (char *) bk, BUFSIZ);
 		while (cnt > 0)
 			if (bk[--cnt] == 0)
@@ -730,7 +730,7 @@ blkio(b, buf, iofcn)
 	int (*iofcn)();
 {
 
-	lseek(tfile, (long) (unsigned) b * BUFSIZ, 0);
+	lseek(tfile, (long) (unsigned) b * BUFSIZ, SEEK_SET);
 	if ((*iofcn)(tfile, buf, BUFSIZ) != BUFSIZ)
 		syserror();
 }

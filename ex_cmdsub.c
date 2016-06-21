@@ -469,7 +469,7 @@ badtag:
 		ungetchar(c);
 	clrstats();
 	do {
-		io = open(master ? "tags" : MASTERTAGS, 0);
+		io = open(master ? "tags" : MASTERTAGS, O_RDONLY);
 		while (getfile() == 0) {
 			register char *cp = linebuf;
 			register char *lp = lasttag;
