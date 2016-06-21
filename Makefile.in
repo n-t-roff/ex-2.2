@@ -85,7 +85,7 @@ install: ${BINDIR} ${LIBDIR} ${SHAREDIR}
 	for i in recover preserve; do \
 		install ex$$i ${LIBDIR}/ex${VERSION}$$i; \
 	done
-	cp doc/vi/*.pdf ${SHAREDIR}/
+	cp doc/vi/*.pdf doc/ex/*.pdf ${SHAREDIR}/
 	chmod 644 ${SHAREDIR}/*.pdf
 
 uninstall:
