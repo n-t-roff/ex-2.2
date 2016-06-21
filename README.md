@@ -50,9 +50,10 @@ $ make distclean
   put these lines to the end of the file
   and insert an empty line before them.
 * The documents
-  [viin.pdf](http://n-t-roff.github.io/ex/2.2/viin.pdf)
-  and
+  [viin.pdf](http://n-t-roff.github.io/ex/2.2/viin.pdf),
   [viapp.pdf](http://n-t-roff.github.io/ex/2.2/viapp.pdf)
+  and
+  [exrm.pdf](http://n-t-roff.github.io/ex/2.2/exrm.pdf)
   describe vi version 2.2 in detail.
 
 **Attention**:
