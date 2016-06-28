@@ -54,7 +54,9 @@ $ make distclean
   [viapp.pdf](http://n-t-roff.github.io/ex/2.2/viapp.pdf)
   and
   [exrm.pdf](http://n-t-roff.github.io/ex/2.2/exrm.pdf)
-  describe vi version 2.2 in detail.
+  describe vi version 2.2 in detail,
+  [ex2.0-3.1.pdf](http://n-t-roff.github.io/ex/3.2/ex2.0-3.1.pdf)
+  shows the differences to later vi versions.
 
 **Attention**:
 The original `vi` had not been 8-bit clean!
