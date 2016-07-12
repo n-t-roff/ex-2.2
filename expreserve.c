@@ -29,7 +29,7 @@
  */
 
 #define	LBLKS	900
-#define	FNSIZE	128
+#define	FNSIZE	4096
 
 
 struct 	header {

@@ -83,7 +83,7 @@ pargs()
 
 	for (ac = 0; ac < argc0; ac++) {
 		if (ac != 0)
-			putchar(' ');
+			ex_putchar(' ');
 		if (ac + argc == argc0 - 1)
 			ex_printf("[");
 		lprintf("%s", as);
@@ -682,7 +682,7 @@ zop2(int lines, int op)
 		return;
 	if (op == EOF && zhadpr) {
 		ex_getline(*addr1);
-		putchar('\r' | QUOTE);
+		ex_putchar('\r' | QUOTE);
 		shudclob = 1;
 	} else if (znoclear == 0 && CL != NOSTR && !inopen) {
 		flush1();
@@ -706,7 +706,7 @@ splitit(void)
 	register int l;
 
 	for (l = COLUMNS > 80 ? 40 : COLUMNS / 2; l > 0; l--)
-		putchar('-');
+		ex_putchar('-');
 	putnl();
 }
 
@@ -722,7 +722,7 @@ plines(adr1, adr2, movedot)
 		ex_getline(*addr);
 		pline(lineno(addr));
 		if (inopen)
-			putchar('\n' | QUOTE);
+			ex_putchar('\n' | QUOTE);
 		if (movedot)
 			dot = addr;
 	}

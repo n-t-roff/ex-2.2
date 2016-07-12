@@ -282,7 +282,7 @@ confirmed(a)
 	pofix();
 	pline(lineno(a));
 	if (inopen)
-		putchar('\n' | QUOTE);
+		ex_putchar('\n' | QUOTE);
 	c = column(loc1 - 1);
 	ugo(c - 1 + (inopen ? 1 : 0), ' ');
 	ugo(column(loc2 - 1) - c, '^');
@@ -292,7 +292,7 @@ again:
 	if (c == '\r')
 		c = '\n';
 	if (inopen)
-		putchar(c), flush();
+		ex_putchar(c), flush();
 	if (c != '\n' && c != EOF) {
 		c = getkey();
 		goto again;
@@ -317,7 +317,7 @@ ugo(cnt, with)
 
 	if (cnt > 0)
 		do
-			putchar(with);
+			ex_putchar(with);
 		while (--cnt > 0);
 }
 

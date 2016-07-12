@@ -122,8 +122,6 @@ gettty()
 	register int c = 0;
 	register char *cp = genbuf;
 	char hadup = 0;
-	int numbline();
-	extern int (*Pline)();
 	int offset = Pline == numbline ? 8 : 0;
 	int ch;
 
@@ -158,9 +156,9 @@ gettty()
 					if (c == '0')
 						lastin = 0;
 					if (!OS) {
-						putchar('\b' | QUOTE);
-						putchar(' ' | QUOTE);
-						putchar('\b' | QUOTE);
+						ex_putchar('\b' | QUOTE);
+						ex_putchar(' ' | QUOTE);
+						ex_putchar('\b' | QUOTE);
 					}
 					tab(offset);
 					hadup = 1;

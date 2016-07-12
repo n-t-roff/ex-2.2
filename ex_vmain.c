@@ -422,7 +422,7 @@ appnd:
 		case 'a':
 			if (*cursor) {
 				if (state == HARDOPEN)
-					putchar(*cursor);
+					ex_putchar(*cursor);
 				cursor++;
 			}
 			goto insrt;

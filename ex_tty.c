@@ -65,7 +65,7 @@ setterm(type)
 		COLUMNS = 1000;
 	aoftspace = tspace;
 	zap();
-	if (cgoto()[0] == 'O')
+	if (!CM || cgoto()[0] == 'O')
 		CA = 0, CM = 0;
 	else
 		CA = 1;

@@ -80,8 +80,8 @@ cleanup(all)
 	}
 }
 
-ex_getline(tl)
-	line tl;
+void
+ex_getline(line tl)
 {
 	register char *bp, *lp;
 	register int nl;

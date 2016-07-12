@@ -64,7 +64,7 @@ commands(bool noprompt, bool exitoneof)
 		if (inglobal == 0) {
 			flush();
 			if (hush == 0 && value(PROMPT) && globp == 0 && noprompt == 0 && intty && endline) {
-				putchar(':');
+				ex_putchar(':');
 				hadpr = 1;
 			}
 			TSYNC();

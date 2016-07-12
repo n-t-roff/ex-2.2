@@ -90,7 +90,7 @@ erewind()
 	if (argc > 1 && !hush) {
 		ex_printf(mesg("%d files@to edit"), argc);
 		if (inopen)
-			putchar(' ');
+			ex_putchar(' ');
 		else
 			putNFL();
 	}

@@ -148,7 +148,7 @@ propts()
 			break;
 		}
 		propt(op);
-		putchar(' ');
+		ex_putchar(' ');
 	}
 	noonl();
 	flush();

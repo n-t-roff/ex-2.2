@@ -30,8 +30,8 @@
  * Most other defitions are quite generous.
  */
 /* FNSIZE is also defined in expreserve.c */
-#define	FNSIZE		128		/* File name size */
-#define	LBSIZE		1024		/* Line length */
+#define	FNSIZE		4096		/* File name size */
+#define	LBSIZE		BUFSIZ		/* Line length */
 #define	ESIZE		512		/* Size of compiled re */
 #define	RHSSIZE		256		/* Size of rhs of substitute */
 #define	NBRA		9		/* Number of re \( \) pairs */
@@ -39,7 +39,7 @@
 #define	ONMSZ		256		/* Option name size */
 #define	GBSIZE		256		/* Buffer size */
 #define	UXBSIZE		128		/* Unix command buffer size */
-#define	VBSIZE		128		/* Partial line max size in visual */
+#define	VBSIZE		LBSIZE		/* Partial line max size in visual */
 /* LBLKS is also defined in expreserve.c */
 #define	LBLKS		900		/* Line pointer blocks in temp file */
 #define	MAXDIRT		12		/* Max dirtcnt before sync tfile */

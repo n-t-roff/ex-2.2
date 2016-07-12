@@ -12,6 +12,11 @@
 static void normchar(int);
 static void slobber(int);
 static void putS(char *);
+static void flush2(void);
+static int motion(void);
+static void plod(void);
+static void normal(struct termios);
+static void sTTY(int);
 
 /*
  * The routines outchar, putchar and pline are actually
@@ -22,15 +27,14 @@ static void putS(char *);
  * During open/visual, outchar and putchar will be set to
  * routines in the file ex_vput.c (vputchar, vinschar, etc.).
  */
-int	(*Outchar)() = termchar;
-int	(*Putchar)() = normchar;
-int	(*Pline)() = normline;
+void	(*Outchar)() = termchar;
+void	(*Putchar)() = normchar;
+void	(*Pline)() = normline;
 
-int (*
-setlist(t))()
-	bool t;
+void (*
+setlist(bool t))()
 {
-	register int (*P)();
+	void (*P)();
 
 	listf = t;
 	P = Putchar;
@@ -38,11 +42,10 @@ setlist(t))()
 	return (P);
 }
 
-int (*
-setnumb(t))()
-	bool t;
+void (*
+setnumb(bool t))()
 {
-	register int (*P)();
+	void (*P)();
 
 	numberf = t;
 	P = Pline;
@@ -54,8 +57,8 @@ setnumb(t))()
  * Format c for list mode; leave things in common
  * with normal print mode to be done by normchar.
  */
-listchar(c)
-	register short c;
+void
+listchar(int c)
 {
 
 	c &= (TRIM|QUOTE);
@@ -112,7 +115,7 @@ normchar(int c)
 			c &= TRIM;
 		}
 	else if (c < ' ' && (c != '\b' || !OS) && c != '\n' && c != '\t' || c == DELETE)
-		putchar('^'), c = ctlof(c);
+		ex_putchar('^'), c = ctlof(c);
 	else if (UPPERCASE)
 		if (isupper(c)) {
 			outchar('\\');
@@ -132,8 +135,8 @@ normchar(int c)
 /*
  * Print a line with a number.
  */
-numbline(i)
-	int i;
+void
+numbline(int i)
 {
 
 	if (shudclob)
@@ -145,7 +148,8 @@ numbline(i)
 /*
  * Normal line output, no numbering.
  */
-normline()
+void
+normline(void)
 {
 	register char *cp;
 
@@ -154,9 +158,9 @@ normline()
 	/* pdp-11 doprnt is not reentrant so can't use "printf" here
 	   in case we are tracing */
 	for (cp = linebuf; *cp;)
-		putchar(*cp++);
+		ex_putchar(*cp++);
 	if (!inopen)
-		putchar('\n' | QUOTE);
+		ex_putchar('\n' | QUOTE);
 }
 
 /*
@@ -215,8 +219,8 @@ static	bool phadnl;
 /*
  * Indirect to current definition of putchar.
  */
-putchar(c)
-	int c;
+void
+ex_putchar(int c)
 {
 
 	(*Putchar)(c);
@@ -228,8 +232,8 @@ putchar(c)
  * Otherwise flush into next level of buffering when
  * small buffer fills or at a newline.
  */
-termchar(c)
-	int c;
+void
+termchar(int c)
 {
 
 	if (pfast == 0 && phadnl)
@@ -245,7 +249,8 @@ termchar(c)
 	}
 }
 
-flush()
+void
+flush(void)
 {
 
 	flush1();
@@ -257,7 +262,8 @@ flush()
  * Work here is destroying motion into positions, and then
  * letting fgoto do the optimized motion.
  */
-flush1()
+void
+flush1(void)
 {
 	register char *lp;
 	register short c;
@@ -318,7 +324,8 @@ flush1()
 	linp = linb;
 }
 
-flush2()
+static void
+flush2(void)
 {
 
 	fgoto();
@@ -392,8 +399,8 @@ fgoto(void)
  * Tab to column col by flushing and then setting destcol.
  * Used by "set all".
  */
-tab(col)
-	int col;
+void
+tab(int col)
 {
 
 	flush1();
@@ -404,7 +411,8 @@ tab(col)
  * Routine to decide how to do a basic motion,
  * choosing between local motions and cursor addressing.
  */ 
-motion()
+static int
+motion(void)
 {
 	register int v, h;
 	/*
@@ -447,7 +455,8 @@ motion()
  * Otherwise just use cursor motions, hacking use of tabs and overtabbing
  * and backspace.
  */
-plod()
+static void
+plod(void)
 {
 	register int i, j, k;
 
@@ -550,7 +559,8 @@ plod()
  * Approximate because kill character echoes newline with
  * no feedback and also because of long input lines.
  */
-noteinp()
+void
+noteinp(void)
 {
 
 	outline++;
@@ -568,7 +578,8 @@ noteinp()
  * On cursor addressible terminals setting to unknown
  * will force a cursor address soon.
  */
-termreset()
+void
+termreset(void)
 {
 
 	endim();
@@ -589,13 +600,15 @@ termreset()
  */
 char	*obp = obuf;
 
-draino()
+void
+draino(void)
 {
 
 	obp = obuf;
 }
 
-flusho()
+void
+flusho(void)
 {
 
 	if (obp != obuf) {
@@ -604,10 +617,11 @@ flusho()
 	}
 }
 
-putnl()
+void
+putnl(void)
 {
 
-	putchar('\n');
+	ex_putchar('\n');
 }
 
 static void
@@ -620,14 +634,14 @@ putS(char *cp)
 		putch(*cp++);
 }
 
-
-putch(c)
-	int c;
+int
+putch(int c)
 {
 
 	*obp++ = c;
 	if (obp >= &obuf[sizeof obuf])
 		flusho();
+	return c;
 }
 
 /*
@@ -638,7 +652,7 @@ putch(c)
  * Cursor motion.
  */
 char *
-cgoto()
+cgoto(void)
 {
 
 	return (tgoto(CM, destcol, destline));
@@ -647,8 +661,8 @@ cgoto()
 /*
  * Put with padding
  */
-putpad(cp)
-	char *cp;
+void
+putpad(char *cp)
 {
 
 	flush();
@@ -658,7 +672,8 @@ putpad(cp)
 /*
  * Set output through normal command mode routine.
  */
-setoutt()
+void
+setoutt(void)
 {
 
 	Outchar = termchar;
@@ -668,8 +683,8 @@ setoutt()
  * Printf (temporarily) in list mode.
  */
 /*VARARGS2*/
-lprintf(cp, dp)
-	char *cp, *dp;
+void
+lprintf(char *cp, char *dp)
 {
 	register int (*P)();
 
@@ -681,7 +696,8 @@ lprintf(cp, dp)
 /*
  * Newline + flush.
  */
-putNFL()
+void
+putNFL(void)
 {
 
 	putnl();
@@ -798,8 +814,8 @@ vraw()
 /*
  * Restore flags to normal state f.
  */
-normal(f)
-	struct termios f;
+static void
+normal(struct termios f)
 {
 
 	if (normtty > 0) {
@@ -821,15 +837,15 @@ setty(struct termios f)
 	return (ot);
 }
 
-gTTY(i)
-	int i;
+void
+gTTY(int i)
 {
 
 	tcgetattr(i, &tty);
 }
 
-sTTY(i)
-	int i;
+static void
+sTTY(int i)
 {
 
 #ifdef V6
@@ -842,8 +858,9 @@ sTTY(i)
 /*
  * Print newline, or blank if in open/visual
  */
-noonl()
+void
+noonl(void)
 {
 
-	putchar(Outchar != termchar ? ' ' : '\n');
+	ex_putchar(Outchar != termchar ? ' ' : '\n');
 }

@@ -43,12 +43,14 @@ $ make distclean
   * `l`: &lt;SPACE&gt;
 
 * `ZZ`, `:x` (use `:wq`)
-* `~`, `:map`
+* `~`, `^E`, `^Y`, `:map`
 * Job control
 * The comment character `"`.
   If you need to comment something in `~/.exrc`,
   put these lines to the end of the file
   and insert an empty line before them.
+* There is no read-only mode.
+  Program name `view` and option `-R` did not exist.
 * The documents
   [viin.pdf](http://n-t-roff.github.io/ex/2.2/viin.pdf),
   [viapp.pdf](http://n-t-roff.github.io/ex/2.2/viapp.pdf)

@@ -232,8 +232,8 @@ killcnt(int cnt)
 	if (value(TERSE) == 0) {
 		ex_printf(" %c%s", Command[0] | ' ', Command + 1);
 		if (Command[strlen(Command) - 1] != 'e')
-			putchar('e');
-		putchar('d');
+			ex_putchar('e');
+		ex_putchar('d');
 	}
 	putNFL();
 }
@@ -460,7 +460,7 @@ qcolumn(lim, gp)
 		lim[1] = x;
 	if (gp)
 		while (*gp)
-			putchar(*gp++);
+			ex_putchar(*gp++);
 	Outchar = OO;
 	return (vcntcol);
 }
@@ -587,10 +587,11 @@ strcLIN(dp)
 	CP(linebuf, dp);
 }
 
-syserror()
+void
+syserror(void)
 {
 	dirtcnt = 0;
-	putchar(' ');
+	ex_putchar(' ');
 	error(strerror(errno));
 }
 
@@ -606,7 +607,7 @@ vfindcol(i)
 	s = linebuf;
 	ignore(qcolumn(s - 1, NOSTR));
 	for (cp = linebuf; *cp && vcntcol < i; cp++)
-		putchar(*cp);
+		ex_putchar(*cp);
 	if (cp != linebuf)
 		cp--;
 	Outchar = OO;
