@@ -9,16 +9,18 @@
  * directions.  Code here is very dependent on mode (open versus visual).
  */
 
+static void vreset(bool);
+static int vfit(line *, int);
+static void vrollR(int);
+
 /*
  * Move in a nonlocal way to line addr.
  * If it isn't on screen put it in specified context.
  * New position for cursor is curs.
  * Like most routines here, we vsave().
  */
-vmoveto(addr, curs, context)
-	register line *addr;
-	char *curs;
-	char context;
+void
+vmoveto(line *addr, char *curs, int context)
 {
 
 	markit(addr);
@@ -30,10 +32,8 @@ vmoveto(addr, curs, context)
  * Vjumpto is like vmoveto, but doesn't mark previous
  * context or save linebuf as current line.
  */
-vjumpto(addr, curs, context)
-	register line *addr;
-	char *curs;
-	char context;
+void
+vjumpto(line *addr, char *curs, int context)
 {
 
 	noteit(0);
@@ -48,9 +48,8 @@ vjumpto(addr, curs, context)
 /*
  * Go up or down cnt (negative is up) to new position curs.
  */
-vupdown(cnt, curs)
-	register int cnt;
-	char *curs;
+void
+vupdown(int cnt, char *curs)
 {
 
 	if (cnt > 0)
@@ -164,9 +163,8 @@ dcontxt:
  * Work here is in determining new top line implied by
  * this placement of line addr, since we always draw from the top.
  */
-vcontext(addr, where)
-	register line *addr;
-	char where;
+void
+vcontext(line *addr, int where)
 {
 	register line *top;
 
@@ -206,7 +204,8 @@ vcontext(addr, where)
  * we may be able to reuse the line we are on
  * if it is blank.  This is a real win.
  */
-vclean()
+void
+vclean(void)
 {
 
 	if (state != VISUAL && state != CRTOPEN) {
@@ -278,8 +277,8 @@ vshow(line *addr, line *top)
  * area;  we are called this way in the middle of a :e escape
  * from visual, e.g.
  */
-vreset(inecho)
-	bool inecho;
+static void
+vreset(bool inecho)
 {
 
 	vcnt = vcline = 0;
@@ -294,9 +293,7 @@ vreset(inecho)
  * than) cnt physical lines?
  */
 line *
-vback(tp, cnt)
-	register int cnt;
-	register line *tp;
+vback(line *tp, int cnt)
 {
 	register int d;
 
@@ -314,9 +311,8 @@ vback(tp, cnt)
 /*
  * How much scrolling will it take to roll cnt lines starting at tp?
  */
-vfit(tp, cnt)
-	register line *tp;
-	int cnt;
+static int
+vfit(line *tp, int cnt)
 {
 	register int j;
 
@@ -334,8 +330,8 @@ vfit(tp, cnt)
 /*
  * Roll cnt lines onto the screen.
  */
-vroll(cnt)
-	register int cnt;
+void
+vroll(int cnt)
 {
 #ifdef V6
 	register bool fried = 0;
@@ -375,10 +371,12 @@ vroll(cnt)
 /*
  * Roll backwards (scroll up).
  */
-vrollR(cnt)
-	register int cnt;
+static void
+vrollR(int cnt)
 {
+#ifdef V6
 	register bool fried = 0;
+#endif
 	short oldhold = hold;
 
 #ifdef ADEBUG
@@ -417,17 +415,20 @@ vrollR(cnt)
  * BUG:		An interrupt during a scroll in this way
  *		dumps to command mode.
  */
-vcookit(cnt)
-	register int cnt;
+#ifdef V6
+static int
+vcookit(int cnt)
 {
 
 	return (cnt > 1 && (ex_ospeed < B1200 && !initev || cnt > EX_LINES * 2));
 }
+#endif
 
 /*
  * Determine displayed depth of current line.
  */
-vdepth()
+int
+vdepth(void)
 {
 	register int d;
 
@@ -442,8 +443,8 @@ vdepth()
 /*
  * Move onto a new line, with cursor at position curs.
  */
-vnline(curs)
-	char *curs;
+void
+vnline(char *curs)
 {
 
 	if (curs)

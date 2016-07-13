@@ -10,10 +10,11 @@
 
 static void qcount(int);
 static void merror1(char *);
+static void copywR(line *, line *, int);
+static void save(line *, line *);
 
-any(c, s)
-	int c;
-	register char *s;
+int
+any(int c, char *s)
 {
 	register int x;
 
@@ -23,8 +24,8 @@ any(c, s)
 	return (0);
 }
 
-backtab(i)
-	register int i;
+int
+backtab(int i)
 {
 	register int j;
 
@@ -37,7 +38,8 @@ backtab(i)
 	return (i);
 }
 
-change()
+void
+change(void)
 {
 
 	tchng++;
@@ -50,8 +52,8 @@ change()
  * characters through position cp of the
  * current line.
  */
-column(cp)
-	register char *cp;
+int
+column(char *cp)
 {
 
 	if (cp == 0)
@@ -59,9 +61,8 @@ column(cp)
 	return (qcolumn(cp, (char *) 0));
 }
 
-Copy(to, from, size)
-	register char *from, *to;
-	register int size;
+void
+Copy(char *to, char *from, int size)
 {
 
 	if (size > 0)
@@ -70,9 +71,8 @@ Copy(to, from, size)
 		while (--size > 0);
 }
 
-copyw(to, from, size)
-	register line *from, *to;
-	register int size;
+void
+copyw(line *to, line *from, int size)
 {
 
 	if (size > 0)
@@ -81,23 +81,23 @@ copyw(to, from, size)
 		while (--size > 0);
 }
 
-copywR(to, from, size)
-	register line *from, *to;
-	register int size;
+static void
+copywR(line *to, line *from, int size)
 {
 
 	while (--size >= 0)
 		to[size] = from[size];
 }
 
-ctlof(c)
-	int c;
+int
+ctlof(int c)
 {
 
 	return (c == TRIM ? '?' : c | ('A' - 1));
 }
 
-dingdong()
+void
+dingdong(void)
 {
 
 	if (VB)
@@ -106,8 +106,8 @@ dingdong()
 		putch('\207');
 }
 
-fixindent(indent)
-	int indent;
+int
+fixindent(int indent)
 {
 	register int i;
 	register char *cp;
@@ -122,8 +122,8 @@ fixindent(indent)
 	return (i);
 }
 
-filioerr(cp)
-	char *cp;
+void
+filioerr(char *cp)
 {
 	register int oerrno = errno;
 
@@ -133,8 +133,7 @@ filioerr(cp)
 }
 
 char *
-genindent(indent)
-	register int indent;
+genindent(int indent)
 {
 	register char *cp;
 
@@ -145,15 +144,15 @@ genindent(indent)
 	return (cp);
 }
 
-getDOT()
+void
+getDOT(void)
 {
 
 	ex_getline(*dot);
 }
 
 line *
-getmark(c)
-	register int c;
+getmark(int c)
 {
 	register line *addr;
 	
@@ -164,8 +163,8 @@ getmark(c)
 	return (0);
 }
 
-getn(cp)
-	register char *cp;
+int
+getn(char *cp)
 {
 	register int i = 0;
 
@@ -176,7 +175,8 @@ getn(cp)
 	return (i);
 }
 
-ignnEOF()
+void
+ignnEOF(void)
 {
 	register int c = getchar();
 
@@ -184,15 +184,15 @@ ignnEOF()
 		ungetchar(c);
 }
 
-iswhite(c)
-	int c;
+int
+iswhite(int c)
 {
 
 	return (c == ' ' || c == '\t');
 }
 
-junk(c)
-	register int c;
+int
+junk(int c)
 {
 
 	if (c && !value(BEAUTIFY))
@@ -211,7 +211,8 @@ junk(c)
 	}
 }
 
-killed()
+void
+killed(void)
 {
 
 	killcnt(addr2 - addr1 + 1);
@@ -238,33 +239,36 @@ killcnt(int cnt)
 	putNFL();
 }
 
-lineno(a)
-	line *a;
+int
+lineno(line *a)
 {
 
 	return (a - zero);
 }
 
-lineDOL()
+int
+lineDOL(void)
 {
 
 	return (lineno(dol));
 }
 
-lineDOT()
+int
+lineDOT(void)
 {
 
 	return (lineno(dot));
 }
 
-markDOT()
+void
+markDOT(void)
 {
 
 	markpr(dot);
 }
 
-markpr(which)
-	line *which;
+void
+markpr(line *which)
 {
 
 	if ((inglobal == 0 || inopen) && which <= endcore) {
@@ -274,8 +278,8 @@ markpr(which)
 	}
 }
 
-markreg(c)
-	register int c;
+int
+markreg(int c)
 {
 
 	if (c == '\'' || c == '`')
@@ -292,8 +296,7 @@ markreg(c)
  * All others map to themselves.
  */
 char *
-mesg(str)
-	register char *str;
+mesg(char *str)
 {
 	register char *cp;
 
@@ -349,11 +352,12 @@ merror1(char *seekpt)
 	strcpy(linebuf, seekpt);
 }
 
-morelines()
+int
+morelines(void)
 {
 
 #ifdef UNIX_SBRK
-	if ((int) sbrk(1024 * sizeof (line)) == -1)
+	if (sbrk(1024 * sizeof (line)) == (void *)-1)
 		return (-1);
 	endcore += 1024;
 	return (0);
@@ -362,7 +366,8 @@ morelines()
 #endif
 }
 
-nonzero()
+void
+nonzero(void)
 {
 
 	if (addr1 == zero) {
@@ -371,24 +376,23 @@ nonzero()
 	}
 }
 
-notable(i)
-	int i;
+int
+notable(int i)
 {
 
 	return (hush == 0 && !inglobal && i > value(REPORT));
 }
 
-
-notempty()
+void
+notempty(void)
 {
 
 	if (dol == zero)
 		error("No lines@in the buffer");
 }
 
-
-netchHAD(cnt)
-	int cnt;
+void
+netchHAD(int cnt)
 {
 
 	netchange(lineDOL() - cnt);
@@ -414,16 +418,15 @@ netchange(int i)
 	putNFL();
 }
 
-putmark(addr)
-	line *addr;
+void
+putmark(line *addr)
 {
 
 	putmk1(addr, putline());
 }
 
-putmk1(addr, n)
-	register line *addr;
-	int n;
+void
+putmk1(line *addr, int n)
 {
 	register line *markp;
 
@@ -435,8 +438,7 @@ putmk1(addr, n)
 }
 
 char *
-plural(i)
-	long i;
+plural(long i)
 {
 
 	return (i == 1 ? "" : "s");
@@ -444,8 +446,8 @@ plural(i)
 
 short	vcntcol;
 
-qcolumn(lim, gp)
-	register char *lim, *gp;
+int
+qcolumn(char *lim, char *gp)
 {
 	register int x;
 	int (*OO)();
@@ -490,9 +492,8 @@ reverse(line *a1, line *a2)
 	}
 }
 
-save(a1, a2)
-	line *a1;
-	register line *a2;
+static void
+save(line *a1, line *a2)
 {
 	register int more;
 
@@ -514,25 +515,29 @@ save(a1, a2)
 	undap2 = a2 + 1;
 }
 
-save12()
+void
+save12(void)
 {
 
 	save(addr1, addr2);
 }
 
-saveall()
+void
+saveall(void)
 {
 
 	save(one, dol);
 }
 
-span()
+int
+span(void)
 {
 
 	return (addr2 - addr1 + 1);
 }
 
-ex_sync()
+void
+ex_sync(void)
 {
 
 	chng = 0;
@@ -540,8 +545,8 @@ ex_sync()
 	xchng = 0;
 }
 
-
-skipwh()
+int
+skipwh(void)
 {
 	register int wh;
 
@@ -571,8 +576,7 @@ smerror(char *seekpt, char *cp)
 }
 
 char *
-strend(cp)
-	register char *cp;
+strend(char *cp)
 {
 
 	while (*cp)
@@ -580,8 +584,8 @@ strend(cp)
 	return (cp);
 }
 
-strcLIN(dp)
-	char *dp;
+void
+strcLIN(char *dp)
 {
 
 	CP(linebuf, dp);
@@ -596,8 +600,7 @@ syserror(void)
 }
 
 char *
-vfindcol(i)
-	int i;
+vfindcol(int i)
 {
 	register char *cp;
 	register int (*OO)() = Outchar;
@@ -615,8 +618,7 @@ vfindcol(i)
 }
 
 char *
-vskipwh(cp)
-	register char *cp;
+vskipwh(char *cp)
 {
 
 	while (iswhite(*cp) && cp[1])
@@ -626,8 +628,7 @@ vskipwh(cp)
 
 
 char *
-vpastwh(cp)
-	register char *cp;
+vpastwh(char *cp)
 {
 
 	while (iswhite(*cp))
@@ -635,8 +636,8 @@ vpastwh(cp)
 	return (cp);
 }
 
-whitecnt(cp)
-	register char *cp;
+int
+whitecnt(char *cp)
 {
 	register int i;
 
@@ -673,8 +674,8 @@ Ignorf(a)
 }
 #endif
 
-markit(addr)
-	line *addr;
+void
+markit(line *addr)
 {
 
 	if (addr != dot && addr >= one && addr <= dol)
