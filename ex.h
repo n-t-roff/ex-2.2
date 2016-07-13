@@ -300,7 +300,7 @@ char	*tgoto();
 char	*ttyname();
 line	*vback(line *, int);
 char	*vfindcol(int);
-char	*vgetline();
+char	*vgetline(int, char *, bool *);
 char	*vpastwh(char *);
 char	*vskipwh(char *);
 void	put(void);
