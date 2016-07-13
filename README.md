@@ -30,12 +30,26 @@ All generated files are removed with
 ```sh
 $ make distclean
 ```
-## Features which had been invented after version 2.2
+## Usage notes for version 2.2
+
+* When inserting characters before a tab,
+  characters following the tab are shifted.
+  This is fixed with `^L`.
+* On some terminals tab characters are displayed wrong
+  after screen updates
+  which results in a left shift of the subsequent text.
+  The display is fixed with the following actions:
+
+  * The current line is always displayed correct after `^L`.
+  * All screen lines are fixed with screen updates after
+    `^F` `^B`, `''` `''`. `^^` `^^` and so on.
+
+Features which had been invented after version 2.2:
 
 * `j`, `k`, `l`.
   Use the alternative commands for cursor motions:
 
-  * `h`: `h` works, alternative is `^H`
+  * `h` works, alternative is `^H`
   * `j`: `^N`
     (`+` and &lt;ENTER&gt; are similar)
   * `k`: `^P`
