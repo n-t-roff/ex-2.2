@@ -947,7 +947,7 @@ godm(void)
 {
 
 	if (insmode) {
-		if (strcmp(DM, IM) == 0)
+		if (eq(DM, IM) == 0)
 			return;
 		endim();
 	}
@@ -966,7 +966,7 @@ static void
 enddm(void)
 {
 
-	if (strcmp(DM, IM) == 0) {
+	if (eq(DM, IM) == 0) {
 		insmode = 1;
 		return;
 	}

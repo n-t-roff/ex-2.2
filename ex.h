@@ -193,7 +193,7 @@ int	xchng;			/* Suppresses multiple "No writes" in !cmd */
  */
 #define	CP(a, b)	memmove(a, b, strlen(b) + 1)
 #define	copy(a,b,c)	Copy((char *) a, (char *) b, c)
-#define	eq(a, b)	(strcmp(a, b) == 0)
+#define	eq(a, b)	((void *)(a) != NULL && (void *)(b) != NULL && strcmp(a, b) == 0)
 #define	getexit(a)	copy(a, resetlab, sizeof (jmp_buf))
 #define	lastchar()	lastc
 #define	outchar(c)	(*Outchar)(c)

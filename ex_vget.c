@@ -11,12 +11,13 @@
  */
 
 static void addto(char *, char *);
+static int getbr(void);
 
 /*
  * Return the key.
  */
-ungetkey(c)
-	char c;
+void
+ungetkey(int c)
 {
 
 	if (Peekkey != ATTN)
@@ -26,7 +27,8 @@ ungetkey(c)
 /*
  * Return a keystroke, but never a ^@.
  */
-getkey()
+int
+getkey(void)
 {
 	register char c;
 
@@ -39,7 +41,8 @@ getkey()
 /*
  * Tell whether next keystroke would be a ^@.
  */
-peekbr()
+int
+peekbr(void)
 {
 
 	Peekkey = getbr();
@@ -58,7 +61,8 @@ short	precbksl;
  * The hard work here is in mapping of \ escaped
  * characters on upper case only terminals.
  */
-getbr()
+static int
+getbr(void)
 {
 	char ch;
 	register int c, d;
@@ -149,7 +153,8 @@ again:
  * Get a key, but if a delete, quit or attention
  * is typed return 0 so we will abort a partial command.
  */
-getesc()
+int
+getesc(void)
 {
 	register int c;
 
@@ -170,7 +175,8 @@ getesc()
 /*
  * Peek at the next keystroke.
  */
-peekkey()
+int
+peekkey(void)
 {
 
 	Peekkey = getkey();
@@ -181,8 +187,8 @@ peekkey()
  * Read a line from the echo area, with single character prompt c.
  * A return value of 1 means the user blewit or blewit away.
  */
-readecho(c)
-	char c;
+int
+readecho(int c)
 {
 	char *sc = cursor;
 	int (*OP)();
@@ -254,7 +260,8 @@ addtext(char *cp)
 		lastcmd[0] = 0;
 }
 
-setDEL()
+void
+setDEL(void)
 {
 
 	setBUF(DEL);
@@ -263,8 +270,8 @@ setDEL()
 /*
  * Put text from cursor upto wcursor in BUF.
  */
-setBUF(BUF)
-	register char *BUF;
+void
+setBUF(char *BUF)
 {
 	register int c;
 	register char *wp = wcursor;
@@ -295,8 +302,8 @@ addto(char *buf, char *str)
  * to do this for open modes now; return and save for later
  * notification in visual.
  */
-noteit(must)
-	bool must;
+int
+noteit(bool must)
 {
 	register int sdl = destline, sdc = destcol;
 
@@ -330,7 +337,8 @@ noteit(must)
  * Rrrrringgggggg.
  * If possible, use flash (VB).
  */
-beep()
+void
+beep(void)
 {
 
 	if (VB)
@@ -345,8 +353,8 @@ beep()
  * motions.  I.e. on an adm3a we might map ^K to ^P.
  * DM1520 for example has a lot of mappable characters.
  */
-map(c)
-	register int c;
+int
+map(int c)
 {
 	register int d;
 	register char *cp = MA;
@@ -366,7 +374,8 @@ map(c)
  * Get a count from the keyed input stream.
  * A zero count is indistinguishable from no count.
  */
-vgetcnt()
+int
+vgetcnt(void)
 {
 	register int c, cnt;
 
