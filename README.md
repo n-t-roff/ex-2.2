@@ -35,14 +35,26 @@ $ make distclean
 * When inserting characters before a tab,
   characters following the tab are shifted.
   This is fixed with `^L`.
-* On some terminals tab characters are displayed wrong
+  (The bug is fixed in vi version 2.6.)
+* If the screen with is not a multiple of the tab width
+  tab characters are displayed wrong
   after screen updates
   which results in a left shift of the subsequent text.
+  (This bug is fixed in vi version 3.4.)
   The display is fixed with the following actions:
 
   * The current line is always displayed correct after `^L`.
   * All screen lines are fixed with screen updates after
     `^F` `^B`, `''` `''`. `^^` `^^` and so on.
+  * The issue does not occur if the terminal width is set
+    to a multiple of the tab width (e.g. a multiple of 8)
+    *before* vi is started.
+
+* As with vi version 1.1
+  it is not possible to delete a range of lines
+  with `:`*startline*`,`*endline*`d` and then insert these
+  lines with `p` or `P`.
+  Use *n*`d` to delete and then `p` or `P` to insert.
 
 Features which had been invented after version 2.2:
 

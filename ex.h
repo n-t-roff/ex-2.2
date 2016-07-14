@@ -304,8 +304,8 @@ char	*vgetline(int, char *, bool *);
 char	*vpastwh(char *);
 char	*vskipwh(char *);
 void	put(void);
-int	putreg();
-int	YANKreg();
+void	putreg(int);
+void	YANKreg(int);
 void	delete(bool);
 int	filter();
 int	getfile();
@@ -457,6 +457,11 @@ void	zop(int);
 void	plines(line *, line *, bool);
 void	pofix(void);
 void	undo(bool);
+void	cleanup(bool);
+line	putline(void);
+void	TSYNC(void);
+int	partreg(int);
+void	notpart(int);
 
 /*
  * C doesn't have a (void) cast, so we have to fake it for lint's sake.
