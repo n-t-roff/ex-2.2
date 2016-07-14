@@ -22,7 +22,8 @@ static	bool bigmove;
 /*
  * Set up addr1 and addr2 for commands whose default address is dot.
  */
-setdot()
+void
+setdot(void)
 {
 
 	setdot1();
@@ -34,7 +35,8 @@ setdot()
  * Call setdot1 to set up default addresses without ever
  * setting the previous context mark.
  */
-setdot1()
+void
+setdot1(void)
 {
 
 	if (addr2 == 0)
@@ -75,7 +77,8 @@ setcount(void)
 /*
  * Parse a number out of the command input stream.
  */
-getnum()
+int
+getnum(void)
 {
 	register int cnt;
 
@@ -109,7 +112,8 @@ setall(void)
 /*
  * No address allowed on, e.g. the file command.
  */
-setnoaddr()
+void
+setnoaddr(void)
 {
 
 	if (addr2 != 0)
@@ -125,7 +129,7 @@ setnoaddr()
  * than the number of lines in the file.
  */
 line *
-address()
+address(void)
 {
 	register line *addr;
 	register int offset, c;
@@ -260,14 +264,16 @@ address()
  * Left over from squashing ex version 1.1 into
  * 11/34's and 11/40's.
  */
-setCNL()
+void
+setCNL(void)
 {
 
 	setcount();
 	ex_newline();
 }
 
-setNAEOL()
+void
+setNAEOL(void)
 {
 
 	setnoaddr();

@@ -7,10 +7,16 @@
  * Since we translate the end of reads into the implied ^D's
  * we have different flavors of routines which do/don't return such.
  */
+
+static int getach(void);
+static int smunch(int, char *);
+static void checkjunk(int);
+
 static	bool junkbs;
 short	lastc = '\n';
 
-ignchar()
+void
+ignchar(void)
 {
 	register int c;
 
@@ -19,7 +25,8 @@ ignchar()
 	while (c == CTRL('d'));
 }
 
-getchar()
+int
+getchar(void)
 {
 	register int c;
 
@@ -29,7 +36,8 @@ getchar()
 	return (c);
 }
 
-getcd()
+int
+getcd(void)
 {
 	register int c;
 
@@ -48,7 +56,8 @@ again:
 	return (c);
 }
 
-peekchar()
+int
+peekchar(void)
 {
 
 	if (peekc == 0)
@@ -56,7 +65,8 @@ peekchar()
 	return (peekc);
 }
 
-peekcd()
+int
+peekcd(void)
 {
 
 	if (peekc == 0)
@@ -64,7 +74,8 @@ peekcd()
 	return (peekc);
 }
 
-getach()
+static int
+getach(void)
 {
 	register int c;
 	static char in_line[128];
@@ -117,7 +128,8 @@ top:
  */
 static	short	lastin;
 
-gettty()
+int
+gettty(void)
 {
 	register int c = 0;
 	register char *cp = genbuf;
@@ -219,9 +231,8 @@ gettty()
  * This should really be done differently so as to use the whitecnt routine
  * and also to hack indenting for LISP.
  */
-smunch(col, ocp)
-	register int col;
-	char *ocp;
+static int
+smunch(int col, char *ocp)
 {
 	register char *cp;
 
@@ -246,8 +257,8 @@ smunch(col, ocp)
 
 char	*cntrlhm =	"^H discarded\n";
 
-checkjunk(c)
-	char c;
+static void
+checkjunk(int c)
 {
 
 	if (junkbs == 0 && c == '\b') {
@@ -257,8 +268,7 @@ checkjunk(c)
 }
 
 line *
-setin(addr)
-	line *addr;
+setin(line *addr)
 {
 
 	if (addr == zero)
