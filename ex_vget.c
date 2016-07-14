@@ -111,7 +111,7 @@ again:
 				d = toupper(c);
 			else {
 				colp = "({)}!|^~'~";
-				while (d = *colp++)
+				while ((d = *colp++))
 					if (d == c) {
 						d = *colp++;
 						break;
@@ -191,7 +191,7 @@ int
 readecho(int c)
 {
 	char *sc = cursor;
-	int (*OP)();
+	void (*OP)();
 	bool waste;
 
 	if (WBOT == WECHO)
@@ -307,7 +307,7 @@ noteit(bool must)
 {
 	register int sdl = destline, sdc = destcol;
 
-	if (notecnt < 2 || !must && state == VISUAL)
+	if (notecnt < 2 || (!must && state == VISUAL))
 		return (0);
 	splitw++;
 	if (WBOT == WECHO)
@@ -361,7 +361,7 @@ map(int c)
 
 	if (cp == 0)
 		return (c);
-	while (d = *cp++) {
+	while ((d = *cp++)) {
 		if (c == d)
 			return (*cp);
 		if (*cp++ == 0)

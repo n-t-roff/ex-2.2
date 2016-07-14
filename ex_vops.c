@@ -65,7 +65,7 @@ vundo(void)
 	register char *cp;
 	char temp[LBSIZE];
 	bool savenote;
-	int (*OO)();
+	void (*OO)();
 	short oldhold = hold;
 
 	switch (vundkind) {
@@ -264,7 +264,7 @@ vdelete(int c)
 			vputchar('@');
 		}
 		wdot = dot;
-		vremote(i, delete, 0);
+		vremote(i, (void (*)(int))delete, 0);
 		notenam = "delete";
 		DEL[0] = 0;
 		killU();
@@ -384,7 +384,7 @@ vchange(int c)
 		 * case we are told to put.
 		 */
 		addr = dot;
-		vremote(cnt, delete, 0);
+		vremote(cnt, (void (*)(int))delete, 0);
 		setpk();
 		notenam = "delete";
 		if (c != 'd')
@@ -527,7 +527,7 @@ voOpen(int c, int cnt)
 	register int ind, i;
 	short oldhold = hold;
 
-	if (value(SLOWOPEN) || value(REDRAW) && AL && DL)
+	if (value(SLOWOPEN) || (value(REDRAW) && AL && DL))
 		cnt = 1;
 	vsave();
 	setLAST();
@@ -591,7 +591,7 @@ vshftop(void)
 	if ((cnt = xdw()) < 0)
 		return;
 	addr = dot;
-	vremote(cnt, vshift, 0);
+	vremote(cnt, (void (*)(int))vshift, 0);
 	vshnam[0] = op;
 	notenam = vshnam;
 	dot = addr;

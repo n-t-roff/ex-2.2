@@ -307,3 +307,4 @@ void	prepapp(void);
 void	vremote(int, void (*)(int), int);
 void	vnoapp(void);
 void	voOpen(int, int);
+void	vappend(int, int, int);

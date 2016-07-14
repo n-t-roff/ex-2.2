@@ -307,8 +307,8 @@ void	put(void);
 void	putreg(int);
 void	YANKreg(int);
 void	delete(bool);
-int	filter();
-int	getfile();
+void	filter(int);
+int	getfile(void);
 int	getsub();
 int	gettty();
 void	join(int);
@@ -462,6 +462,16 @@ line	putline(void);
 void	TSYNC(void);
 int	partreg(int);
 void	notpart(int);
+int	getargs(void);
+void	getone(void);
+void	rop(int);
+void	rop2(void);
+void	rop3(int);
+void	wop(void);
+void	unix0(bool);
+void	recover(void);
+void	waitfor(void);
+void	revocer(void);
 
 /*
  * C doesn't have a (void) cast, so we have to fake it for lint's sake.

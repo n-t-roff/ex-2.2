@@ -9,6 +9,12 @@
  * File input/output, unix escapes, source, filtering preserve and recover
  */
 
+static int gscan(void);
+static int samei(struct stat *, char *);
+static int edfile(void);
+static void wrerror(void);
+static int iostats(void);
+
 /*
  * Following remember where . was in the previous file for return
  * on file switching.
@@ -100,7 +106,8 @@ filename(int comm)
  * Get the argument words for a command into genbuf
  * expanding # and %.
  */
-getargs()
+int
+getargs(void)
 {
 	register int c;
 	register char *cp, *fp;
@@ -235,7 +242,8 @@ glob(struct glob *gp)
  * Scan genbuf for shell metacharacters.
  * Set is union of v7 shell and csh metas.
  */
-gscan()
+static int
+gscan(void)
 {
 	register char *cp;
 
@@ -248,7 +256,8 @@ gscan()
 /*
  * Parse one filename into file.
  */
-getone()
+void
+getone(void)
 {
 	register char *str;
 	struct glob G;
@@ -278,8 +287,8 @@ samef:
  * Read a file from the world.
  * C is command, 'e' if this really an edit (or a recover).
  */
-rop(c)
-	int c;
+void
+rop(int c)
 {
 	register int i;
 	struct stat stbuf;
@@ -343,7 +352,8 @@ rop(c)
 	rop3(c);
 }
 
-rop2()
+void
+rop2(void)
 {
 
 	deletenone();
@@ -351,8 +361,8 @@ rop2()
 	ignore(append(getfile, addr2));
 }
 
-rop3(c)
-	int c;
+void
+rop3(int c)
 {
 
 	if (iostats() == 0 && c == 'e')
@@ -391,9 +401,8 @@ other:
 /*
  * Are these two really the same inode?
  */
-samei(sp, cp)
-	struct stat *sp;
-	char *cp;
+static int
+samei(struct stat *sp, char *cp)
 {
 	struct stat stb;
 
@@ -410,7 +419,8 @@ samei(sp, cp)
 /*
  * Write a file.
  */
-wop()
+void
+wop(void)
 {
 	register int c, exclam, nonexist;
 	struct stat stbuf;
@@ -494,7 +504,8 @@ cre:
  * if this is a partial buffer, and distinguish
  * all cases.
  */
-edfile()
+static int
+edfile(void)
 {
 
 	if (!edited || !eq(file, savedfile))
@@ -506,8 +517,8 @@ edfile()
  * First part of a shell escape,
  * parse the line, expanding # and % and ! and printing if implied.
  */
-unix0(warn)
-	bool warn;
+void
+unix0(bool warn)
 {
 	register char *up, *fp;
 	register short c;
@@ -704,8 +715,8 @@ unixwt(bool c, struct termios f)
  * the filter, then a child editor is created to write it.
  * If output is catch it from io which is created by unixex.
  */
-filter(mode)
-	register int mode;
+void
+filter(int mode)
 {
 	static int pvec[2];
 	struct termios f;
@@ -752,7 +763,8 @@ filter(mode)
  * Set up to do a recover, getting io to be a pipe from
  * the recover process.
  */
-recover()
+void
+recover(void)
 {
 	static int pvec[2];
 
@@ -782,7 +794,8 @@ recover()
 /*
  * Wait for the process (pid an external) to complete.
  */
-waitfor()
+void
+waitfor(void)
 {
 
 	do
@@ -796,7 +809,8 @@ waitfor()
  * exits non-zero, force not edited; otherwise force
  * a write.
  */
-revocer()
+void
+revocer(void)
 {
 
 	waitfor();
@@ -811,7 +825,8 @@ revocer()
  */
 static	char *nextip;
 
-getfile()
+int
+getfile(void)
 {
 	register short c;
 	register char *lp, *fp;
@@ -901,7 +916,8 @@ putfile(void)
  * the edited file then we consider it to have changed since it is
  * now likely scrambled.
  */
-wrerror()
+static void
+wrerror(void)
 {
 
 	if (eq(file, savedfile) && edited)
@@ -976,7 +992,8 @@ clrstats(void)
 /*
  * Io is finished, close the unit and print statistics.
  */
-iostats()
+static int
+iostats(void)
 {
 
 	close(io);
