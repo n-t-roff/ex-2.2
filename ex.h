@@ -316,14 +316,14 @@ void	listchar(int);
 void	normline(void);
 void	numbline(int);
 int	(*oldquit)();
-int	onhup();
-int	onintr();
+void	onhup(int);
+void	onintr(int);
 int	putch(int);
 void	shift(int, int);
 void	termchar(int);
 void	vfilter(void);
 #ifndef V6
-int	vintr();
+void	vintr(int);
 #endif
 int	vputch();
 void	vshftop(void);
@@ -472,6 +472,24 @@ void	unix0(bool);
 void	recover(void);
 void	waitfor(void);
 void	revocer(void);
+int	cmdreg(void);
+int	endcmd(int);
+void	eol(void);
+void	erewind(void);
+void	fixol(void);
+int	exclam(void);
+void	makargs(void);
+void	next(void);
+int	quickly(void);
+int	skipend(void);
+void	tailspec(int);
+void	tail(char *);
+void	tail2of(char *);
+void	tailprim(char *, int, bool);
+void	vnfl(void);
+void	init(void);
+void	setrupt(void);
+int	preserve(void);
 
 /*
  * C doesn't have a (void) cast, so we have to fake it for lint's sake.

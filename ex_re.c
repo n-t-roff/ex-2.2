@@ -492,7 +492,7 @@ complex:
 		if (c == eof || c == EOF) {
 			if (bracketp != bracket)
 				cerror("Unmatched \\(|More \\('s than \\)'s in regular expression");
-			*ep++ = CEOF;
+			*ep++ = EX_CEOF;
 			if (c == EOF)
 				ungetchar(c);
 			return (eof);
@@ -618,7 +618,7 @@ magic:
 		case '\n':
 			if (oknl) {
 				ungetchar(c);
-				*ep++ = CEOF;
+				*ep++ = EX_CEOF;
 				return (eof);
 			}
 			cerror("Badly formed re|Missing closing delimiter for regular expression");
@@ -749,7 +749,7 @@ advance(lp, ep)
 			continue;
 		return (0);
 
-	case CEOF:
+	case EX_CEOF:
 		loc2 = lp;
 		return (1);
 
