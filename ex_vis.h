@@ -294,3 +294,10 @@ void	setBUF(char *);
 int	noteit(bool);
 int	map(int);
 int	vgetcnt(void);
+int	lfind(bool, int, void (*)(), line *);
+#ifdef LISP
+int	lindent(line *);
+#endif
+int	lmatchp(line *);
+void	lsmatch(char *);
+int	lbrack(int, void (*)());

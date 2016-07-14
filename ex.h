@@ -52,7 +52,7 @@
 #include <termios.h>
 #include <fcntl.h>
 
-extern	int errno;
+int tputs(const char *, int, int (*)(int));
 
 typedef	int	line;
 typedef	short	bool;
@@ -306,12 +306,12 @@ char	*vskipwh(char *);
 void	put(void);
 int	putreg();
 int	YANKreg();
-int	delete();
+void	delete(bool);
 int	filter();
 int	getfile();
 int	getsub();
 int	gettty();
-int	join();
+void	join(int);
 void	listchar(int);
 void	normline(void);
 void	numbline(int);
@@ -319,7 +319,7 @@ int	(*oldquit)();
 int	onhup();
 int	onintr();
 int	putch(int);
-int	shift();
+void	shift(int, int);
 void	termchar(int);
 void	vfilter(void);
 #ifndef V6
@@ -327,7 +327,7 @@ int	vintr();
 #endif
 int	vputch();
 void	vshftop(void);
-int	yank();
+void	yank(void);
 void	ostop(struct termios);
 struct termios setty(struct termios);
 struct termios unixex(char *, char *, int, int);
@@ -446,6 +446,17 @@ int	skipwh(void);
 void	strcLIN(char *);
 int	whitecnt(char *);
 void	markit(line *);
+int	append(int (*)(), line *);
+void	appendnone(void);
+void	pargs(void);
+void	deletenone(void);
+void	squish(void);
+void	move(void);
+void	pragged(bool);
+void	zop(int);
+void	plines(line *, line *, bool);
+void	pofix(void);
+void	undo(bool);
 
 /*
  * C doesn't have a (void) cast, so we have to fake it for lint's sake.

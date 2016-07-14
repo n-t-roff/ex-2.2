@@ -403,7 +403,7 @@ vgetline(int cnt, char *gcursor, bool *aescaped)
 	register char *cp;
 	int x, y, iwhite;
 	char *iglobp;
-	int (*OO)() = Outchar;
+	void (*OO)() = Outchar;
 
 	/*
 	 * Clear the output state and counters
@@ -639,7 +639,7 @@ vbackup:
 			 * generated autoindent.  We count the ^D for repeat
 			 * purposes.
 			 */
-			if (c == iwhite && c != 0)
+			if (c == iwhite && c != 0) {
 				if (cp == gcursor) {
 					iwhite = backtab(c);
 					CDCNT++;
@@ -663,6 +663,7 @@ vbackup:
 					vputc(' ');
 					goto vbackup;
 				}
+			}
 			if (vglobp && vglobp - iglobp >= 2 &&
 			    (vglobp[-2] == '^' || vglobp[-2] == '0')
 			    && gcursor == ogcursor + 1)
