@@ -1,6 +1,7 @@
 /* Copyright (c) 1979 Regents of the University of California */
 #include "ex.h"
 #include "ex_tty.h"
+#include "ex_vis.h"
 
 /*
  * Input routines for command mode.
@@ -46,13 +47,14 @@ again:
 	if (c == EOF)
 		return (c);
 	c &= TRIM;
-	if (!inopen)
+	if (!inopen) {
 		if (c == CTRL('d'))
 			setlastchar('\n');
 		else if (junk(c)) {
 			checkjunk(c);
 			goto again;
 		}
+	}
 	return (c);
 }
 
@@ -93,7 +95,7 @@ getach(void)
 	}
 top:
 	if (input) {
-		if (c = *input++) {
+		if ((c = *input++)) {
 			if (c &= TRIM)
 				return (lastc = c);
 			goto top;
@@ -267,7 +269,7 @@ checkjunk(int c)
 	}
 }
 
-line *
+void
 setin(line *addr)
 {
 

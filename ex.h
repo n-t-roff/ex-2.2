@@ -52,7 +52,12 @@
 #include <termios.h>
 #include <fcntl.h>
 
-int tputs(const char *, int, int (*)(int));
+int tgetent(char *bp, const char *name);
+int tgetflag(char *id);
+int tgetnum(char *id);
+char *tgetstr(char *id, char **area);
+char *tgoto(const char *cap, int col, int row);
+int tputs(const char *str, int affcnt, int (*putc)(int));
 
 typedef	int	line;
 typedef	short	bool;
@@ -277,7 +282,7 @@ line	*undadot;		/* If we saved all lines, dot reverts here */
 extern void	(*Outchar)();
 extern void	(*Pline)();
 extern void	(*Putchar)();
-int	(*oldhup)();
+void	(*oldhup)(int);
 void	(*setlist(bool))();
 void	(*setnumb(bool))();
 line	*address(void);
@@ -286,12 +291,12 @@ char	*genindent(int);
 char	*getblock(line, int);
 char	*getenv();
 line	*getmark(int);
-char	*longname();
+char	*longname(char *, char *);
 char	*mesg(char *);
 char	*place(char *, char *, char *);
 char	*plural(long);
 line	*scanfor();
-line	*setin(line *);
+void	setin(line *);
 char	*strcat();
 char	*strcpy();
 char	*strend(char *);
@@ -315,7 +320,7 @@ void	join(int);
 void	listchar(int);
 void	normline(void);
 void	numbline(int);
-int	(*oldquit)();
+void	(*oldquit)(int);
 void	onhup(int);
 void	onintr(int);
 int	putch(int);
@@ -505,6 +510,7 @@ int	getchar(void);
 int	getcd(void);
 int	peekchar(void);
 int	peekcd(void);
+void	setterm(char *);
 
 /*
  * C doesn't have a (void) cast, so we have to fake it for lint's sake.

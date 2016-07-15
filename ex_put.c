@@ -1,6 +1,7 @@
 /* Copyright (c) 1979 Regents of the University of California */
 #include "ex.h"
 #include "ex_tty.h"
+#include "ex_vis.h"
 
 /*
  * Terminal driving and line formatting routines.
@@ -49,7 +50,7 @@ setnumb(bool t))()
 
 	numberf = t;
 	P = Pline;
-	Pline = t ? numbline : normline;
+	Pline = t ? (void (*)())numbline : normline;
 	return (P);
 }
 
@@ -80,7 +81,7 @@ listchar(int c)
 	default:
 		if (c & QUOTE)
 			break;
-		if (c < ' ' && c != '\n' || c == DELETE)
+		if ((c < ' ' && c != '\n') || c == DELETE)
 			outchar('^'), c = ctlof(c);
 		break;
 	}
@@ -114,9 +115,9 @@ normchar(int c)
 		default:
 			c &= TRIM;
 		}
-	else if (c < ' ' && (c != '\b' || !OS) && c != '\n' && c != '\t' || c == DELETE)
+	else if ((c < ' ' && (c != '\b' || !OS) && c != '\n' && c != '\t') || c == DELETE)
 		ex_putchar('^'), c = ctlof(c);
-	else if (UPPERCASE)
+	else if (UPPERCASE) {
 		if (isupper(c)) {
 			outchar('\\');
 			c = tolower(c);
@@ -129,6 +130,7 @@ normchar(int c)
 					break;
 				}
 		}
+	}
 	outchar(c);
 }
 
@@ -383,7 +385,7 @@ fgoto(void)
 				outcol = 0;
 		}
 	}
-	if (destline < outline && !(CA && !holdcm || UP != NOSTR))
+	if (destline < outline && !((CA && !holdcm) || UP != NOSTR))
 		destline = outline;
 	if (motion())
 		return;
@@ -423,13 +425,14 @@ motion(void)
 	if (!BS)
 		return (0);
 	v = destline - outline;
-	if (v < 0)
-		if (CA && !holdcm || UP) {
+	if (v < 0) {
+		if ((CA && !holdcm) || UP) {
 			if (!UP)
 				return (0);
 			v = -v;
 		} else
 			destline = outline;
+	}
 	h = destcol;
 	if (!v || pfast) {
 		h -= outcol;
@@ -496,7 +499,7 @@ plod(void)
 	else
 		i = destcol;
 	if ((!NONL || outline >= destline) && (!NC || outline < destline) &&
-	    (outcol - destcol > i + 1 || outcol > destcol && !BS && !BC)) {
+	    (outcol - destcol > i + 1 || (outcol > destcol && !BS && !BC))) {
 		putch('\r');
 		if (NC) {
 			putch('\n');
@@ -686,7 +689,7 @@ setoutt(void)
 void
 lprintf(char *cp, char *dp)
 {
-	register int (*P)();
+	void (*P)();
 
 	P = setlist(1);
 	ex_printf(cp, dp);

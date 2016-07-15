@@ -1,6 +1,7 @@
 /* Copyright (c) 1979 Regents of the University of California */
 #include "ex.h"
 #include "ex_re.h"
+#include "ex_vis.h"
 
 /*
  * Global, substitute and regular expressions.
@@ -73,7 +74,6 @@ global(bool k)
 	}
 brkwh:
 	ungetchar(c);
-out:
 	ex_newline();
 	*gp++ = c;
 	*gp++ = 0;
@@ -204,7 +204,7 @@ comprhs(int seof)
 {
 	register char *rp, *orp;
 	register int c;
-	char orhsbuf[LBSIZE / 2];
+	char orhsbuf[RHSSIZE];
 
 	rp = rhsbuf;
 	CP(orhsbuf, rp);
@@ -232,7 +232,7 @@ comprhs(int seof)
 magic:
 			if (c == '~') {
 				for (orp = orhsbuf; *orp; *rp++ = *orp++)
-					if (rp >= &rhsbuf[LBSIZE / 2 + 1])
+					if (rp >= &rhsbuf[RHSSIZE - 1])
 						goto toobig;
 				continue;
 			}
@@ -250,7 +250,7 @@ magic:
 				goto magic;
 			break;
 		}
-		if (rp >= &rhsbuf[LBSIZE / 2 - 1])
+		if (rp >= &rhsbuf[RHSSIZE - 1])
 toobig:
 			error("Replacement pattern too long@- limit 256 characters");
 		*rp++ = c;
@@ -349,7 +349,7 @@ dosub(void)
 	while (lp < loc1)
 		*sp++ = *lp++;
 	casecnt = 0;
-	while (c = *rp++) {
+	while ((c = *rp++)) {
 		if (c & QUOTE)
 			switch (c & TRIM) {
 
@@ -400,7 +400,7 @@ ovflo:
 	}
 	lp = loc2;
 	loc2 = sp + (linebuf - genbuf) + (loc1 == loc2);
-	while (*sp++ = *lp++)
+	while ((*sp++ = *lp++))
 		if (sp >= &genbuf[LBSIZE])
 			goto ovflo;
 	strcLIN(genbuf);
@@ -477,7 +477,7 @@ compile(int eof, int oknl)
 			return (c);
 
 		default:
-			error("Badly formed re|Regular expression \ must be followed by / or ?");
+			error("Badly formed re|Regular expression \\ must be followed by / or ?");
 		}
 	if (c == eof || c == '\n' || c == EOF) {
 		if (*ep == 0)
@@ -636,7 +636,7 @@ magic:
 			cerror("Badly formed re|Missing closing delimiter for regular expression");
 
 		case '$':
-			if (peekchar() == eof || peekchar() == EOF || oknl && peekchar() == '\n') {
+			if (peekchar() == eof || peekchar() == EOF || (oknl && peekchar() == '\n')) {
 				*ep++ = CDOL;
 				continue;
 			}
@@ -669,8 +669,8 @@ static int
 same(int a, int b)
 {
 
-	return (a == b || value(IGNORECASE) &&
-	   ((islower(a) && toupper(a) == b) || (islower(b) && toupper(b) == a)));
+	return (a == b || (value(IGNORECASE) &&
+	   ((islower(a) && toupper(a) == b) || (islower(b) && toupper(b) == a))));
 }
 
 char	*locs;
@@ -727,8 +727,6 @@ static int
 advance(char *lp, char *ep)
 {
 	register char *curlp;
-	char *sp, *sp1;
-	int c;
 
 	for (;;) switch (*ep++) {
 
@@ -780,11 +778,11 @@ advance(char *lp, char *ep)
 		return (0);
 
 	case CBRA:
-		braslist[*ep++] = lp;
+		braslist[(int)*ep++] = lp;
 		continue;
 
 	case CKET:
-		braelist[*ep++] = lp;
+		braelist[(int)*ep++] = lp;
 		continue;
 
 	case CDOT|STAR:

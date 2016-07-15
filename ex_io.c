@@ -1,4 +1,6 @@
 /* Copyright (c) 1979 Regents of the University of California */
+#include <sys/types.h>
+#include <sys/wait.h>
 #include "ex.h"
 #include "ex_argv.h"
 #include "ex_temp.h"
@@ -81,7 +83,7 @@ filename(int comm)
 			break;
 		}
 	}
-	if (hush && comm != 'f' || comm == 'E')
+	if ((hush && comm != 'f') || comm == 'E')
 		return;
 	if (file[0] != 0) {
 		lprintf("\"%s\"", file);
@@ -332,9 +334,11 @@ rop(int c)
 		case 0411:
 			error(" Executable");
 
+#if 0 /* ??? wider than short! (ck) */
 		case 0177545:
 		case 0177555:
 			error(" Archive");
+#endif
 
 		default:
 			if (magic & 0100200)
@@ -472,11 +476,12 @@ cre:
 #endif
 		if (io < 0)
 			syserror();
-		if (hush == 0)
+		if (hush == 0) {
 			if (nonexist)
 				ex_printf(" [New file]");
 			else if (value(WRITEANY) && edfile() != EDF)
 				ex_printf(" [Existing file]");
+		}
 		break;
 
 	case 2:
@@ -627,7 +632,7 @@ struct termios
 unixex(char *opt, char *up, int newstdin, int mode)
 {
 	int pvec[2];
-	struct termios f;
+	struct termios f = tty; /* (ck) */
 
 	signal(SIGINT, SIG_IGN);
 	if (inopen)

@@ -18,7 +18,7 @@ any(int c, char *s)
 {
 	register int x;
 
-	while (x = *s++)
+	while ((x = *s++))
 		if (x == c)
 			return (1);
 	return (0);
@@ -450,7 +450,7 @@ int
 qcolumn(char *lim, char *gp)
 {
 	register int x;
-	int (*OO)();
+	void (*OO)();
 
 	OO = Outchar;
 	Outchar = qcount;
@@ -603,7 +603,7 @@ char *
 vfindcol(int i)
 {
 	register char *cp;
-	register int (*OO)() = Outchar;
+	void (*OO)() = Outchar;
 	char *s;
 
 	Outchar = qcount;

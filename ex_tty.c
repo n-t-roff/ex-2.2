@@ -9,6 +9,8 @@
  */
 /* short	ospeed = -1; */
 
+static void zap(void);
+
 void
 gettmode(void)
 {
@@ -36,8 +38,9 @@ char **sstrs[] = {
 bool *sflags[] = {
 	&AM, &BS, &DA, &DB, &EO, &HZ, &IN, &MI, &NC, &OS, &UL, &XN
 };
-setterm(type)
-	char *type;
+
+void
+setterm(char *type)
 {
 	char *cgoto();
 	register int unknown, i;
@@ -81,7 +84,8 @@ setterm(type)
 		serror("%s: Unknown terminal type", type);
 }
 
-zap()
+static void
+zap(void)
 {
 	register char *namp;
 	register bool **fp;
@@ -102,9 +106,7 @@ zap()
 }
 
 char *
-longname(bp, def)
-	register char *bp;
-	char *def;
+longname(char *bp, char *def)
 {
 	register char *cp;
 
