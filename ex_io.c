@@ -41,7 +41,7 @@ filename(int comm)
 	register int c = comm, d;
 	register int i;
 
-	d = getchar();
+	d = ex_getchar();
 	if (endcmd(d)) {
 		if (savedfile[0] == 0 && comm != 'f')
 			error("No file|No current filename");
@@ -118,7 +118,7 @@ getargs(void)
 		return (0);
 	CP(genbuf, "echo "); cp = &genbuf[5];
 	for (;;) {
-		c = getchar();
+		c = ex_getchar();
 		if (endcmd(c)) {
 			ungetchar(c);
 			break;
@@ -127,7 +127,7 @@ getargs(void)
 
 		case '\\':
 			if (any(peekchar(), "#%"))
-				c = getchar();
+				c = ex_getchar();
 			/* fall into... */
 
 		default:
@@ -531,7 +531,7 @@ unix0(bool warn)
 
 	printub = 0;
 	CP(puxb, uxb);
-	c = getchar();
+	c = ex_getchar();
 	if (c == '\n' || c == EOF)
 		error("Incomplete shell escape command@- use 'shell' to get a shell");
 	up = uxb;
@@ -540,7 +540,7 @@ unix0(bool warn)
 
 		case '\\':
 			if (any(peekchar(), "%#!"))
-				c = getchar();
+				c = ex_getchar();
 		default:
 			if (up >= &uxb[UXBSIZE]) {
 tunix:
@@ -587,7 +587,7 @@ uexp:
 			}
 			break;
 		}
-		c = getchar();
+		c = ex_getchar();
 	} while (c == '|' || !endcmd(c));
 	if (c == EOF)
 		ungetchar(c);

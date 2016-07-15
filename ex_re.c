@@ -40,11 +40,11 @@ global(bool k)
 	nonzero();
 	if (skipend())
 		error("Global needs re|Missing regular expression for global");
-	c = getchar();
+	c = ex_getchar();
 	ignore(compile(c, 0));
 	savere(scanre);
 	gp = globuf;
-	while ((c = getchar()) != '\n') {
+	while ((c = ex_getchar()) != '\n') {
 		switch (c) {
 
 		case EOF:
@@ -52,7 +52,7 @@ global(bool k)
 			goto brkwh;
 
 		case '\\':
-			c = getchar();
+			c = ex_getchar();
 			switch (c) {
 
 			case '\\':
@@ -158,7 +158,7 @@ compsub(int ch)
 
 	case 's':
 		ignore(skipwh());
-		seof = getchar();
+		seof = ex_getchar();
 		if (endcmd(seof))
 			error("Substitute needs re|Missing regular expression for substitute");
 		seof = compile(seof, 1);
@@ -179,7 +179,7 @@ compsub(int ch)
 		break;
 	}
 	for (;;) {
-		c = getchar();
+		c = ex_getchar();
 		switch (c) {
 
 		case 'g':
@@ -209,13 +209,13 @@ comprhs(int seof)
 	rp = rhsbuf;
 	CP(orhsbuf, rp);
 	for (;;) {
-		c = getchar();
+		c = ex_getchar();
 		if (c == seof)
 			break;
 		switch (c) {
 
 		case '\\':
-			c = getchar();
+			c = ex_getchar();
 			if (c == EOF) {
 				ungetchar(c);
 				break;
@@ -458,8 +458,8 @@ compile(int eof, int oknl)
 
 	if (isalpha(eof) || isdigit(eof))
 		error("Re delimiter must not be letter or digit|Regular expressions cannot be delimited by letters or digits");
-	ep = expbuf;
-	c = getchar();
+	lastep = ep = expbuf;
+	c = ex_getchar();
 	if (eof == '\\')
 		switch (c) {
 
@@ -492,7 +492,7 @@ compile(int eof, int oknl)
 	nbra = 0;
 	circfl = 0;
 	if (c == '^') {
-		c = getchar();
+		c = ex_getchar();
 		circfl++;
 	}
 	ungetchar(c);
@@ -500,7 +500,7 @@ compile(int eof, int oknl)
 		if (ep >= &expbuf[ESIZE - 2])
 complex:
 			cerror("Re too complex|Regular expression too complicated");
-		c = getchar();
+		c = ex_getchar();
 		if (c == eof || c == EOF) {
 			if (bracketp != bracket)
 				cerror("Unmatched \\(|More \\('s than \\)'s in regular expression");
@@ -519,7 +519,7 @@ complex:
 
 		case '\\':
 			if (!intag)
-				c = getchar();
+				c = ex_getchar();
 			switch (c) {
 
 			case '(':
@@ -584,23 +584,23 @@ magic:
 				*ep++ = CCL;
 				*ep++ = 0;
 				cclcnt = 1;
-				c = getchar();
+				c = ex_getchar();
 				if (c == '^') {
-					c = getchar();
+					c = ex_getchar();
 					ep[-2] = NCCL;
 				}
 				if (c == ']')
 					cerror("Bad character class|Empty character class '[]' or '[^]' cannot match");
 				while (c != ']') {
 					if (c == '\\' && any(peekchar(), "]-^\\"))
-						c = getchar() | QUOTE;
+						c = ex_getchar() | QUOTE;
 					if (c == '\n' || c == EOF)
 						cerror("Missing ]");
 					*ep++ = c;
 					cclcnt++;
 					if (ep >= &expbuf[ESIZE])
 						goto complex;
-					c = getchar();
+					c = ex_getchar();
 				}
 				lastep[1] = cclcnt;
 				continue;

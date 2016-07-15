@@ -27,7 +27,7 @@ ignchar(void)
 }
 
 int
-getchar(void)
+ex_getchar(void)
 {
 	register int c;
 
@@ -63,7 +63,7 @@ peekchar(void)
 {
 
 	if (peekc == 0)
-		peekc = getchar();
+		peekc = ex_getchar();
 	return (peekc);
 }
 
@@ -176,7 +176,7 @@ gettty(void)
 					}
 					tab(offset);
 					hadup = 1;
-					c = getchar();
+					c = ex_getchar();
 				} else
 					ungetchar(ch);
 				break;
@@ -199,12 +199,12 @@ gettty(void)
 		holdcm = 0;
 	}
 	if (c == 0)
-		c = getchar();
+		c = ex_getchar();
 	while (c != EOF && c != '\n') {
 		if (cp > &genbuf[LBSIZE - 2])
 			error("Input line too long");
 		*cp++ = c;
-		c = getchar();
+		c = ex_getchar();
 	}
 	if (c == EOF) {
 		if (inglobal)

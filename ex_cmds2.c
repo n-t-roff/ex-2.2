@@ -26,7 +26,7 @@ cmdreg(void)
 
 	pastwh();
 	if (isalpha(peekchar()))
-		c = getchar();
+		c = ex_getchar();
 	return (c);
 }
 
@@ -259,7 +259,7 @@ ex_newline(void)
 
 	resetflav();
 	for (;;) {
-		c = getchar();
+		c = ex_getchar();
 		switch (c) {
 
 		case '^':
@@ -433,7 +433,7 @@ tailprim(char *comm, int i, bool notinvis)
 	for (cp = tcommand; i > 0; i--)
 		*cp++ = *comm++;
 	while (*comm && peekchar() == *comm)
-		*cp++ = getchar(), comm++;
+		*cp++ = ex_getchar(), comm++;
 	c = peekchar();
 	if (notinvis || isalpha(c)) {
 		/*
@@ -443,7 +443,7 @@ tailprim(char *comm, int i, bool notinvis)
 		if (tcommand[0] == 'd' && any(c, "lp"))
 			goto ret;
 		while (cp < &tcommand[19] && isalpha(peekchar()))
-			*cp++ = getchar();
+			*cp++ = ex_getchar();
 		*cp = 0;
 		if (notinvis)
 			serror("What?|%s: No such command from open/visual", tcommand);

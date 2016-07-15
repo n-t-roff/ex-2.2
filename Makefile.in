@@ -39,9 +39,9 @@ DBG_CFLAGS= -Wall -Wextra \
 	-fsanitize=undefined \
 	-fsanitize=integer \
 	-fsanitize=address
+DEB=	#${DBG_CFLAGS}
 _CFLAGS=	-DTABS=8 -DLISP -DCHDIR -DUCVISUAL \
-	${D_SBRK} -DLIBDIR='"${LIBDIR}"' \
-	#${DBG_CFLAGS}
+	${D_SBRK} -DLIBDIR='"${LIBDIR}"' ${DEB}
 _LDFLAGS=-s
 OBJS=	ex.o ex_addr.o ex_cmds.o ex_cmds2.o ex_cmdsub.o ex_data.o ex_get.o \
 	ex_io.o ex_put.o ex_re.o ex_set.o ex_subr.o ex_temp.o ex_tty.o \
@@ -54,19 +54,19 @@ all: a.out exrecover expreserve #tags
 tags:
 	${CTAGS} ex.c ex_*.c
 
-${OBJS}: ex_vars.h ex.h ex_tty.h
+${OBJS}: ex.h ex_tty.h #ex_vars.h
 
-#ex_vars.h:
-#	csh makeoptions ${_CFLAGS}
+ex_vars.h: ex_data.c
+	csh makeoptions ${CC} -E ${_CFLAGS}
 
 a.out: ${OBJS}
-	${CC} ${CFLAGS} ${_CFLAGS} ${LDFLAGS} ${_LDFLAGS} ${OBJS} ${TERMLIB}
+	${CC} ${DEB} ${LDFLAGS} ${_LDFLAGS} ${OBJS} ${TERMLIB}
 
 exrecover: exrecover.o
-	${CC} ${CFLAGS} ${_CFLAGS} ${LDFLAGS} ${_LDFLAGS} -o $@ exrecover.o
+	${CC} ${DEB} ${LDFLAGS} ${_LDFLAGS} -o $@ exrecover.o
 
 expreserve: expreserve.o
-	${CC} ${CFLAGS} ${_CFLAGS} ${LDFLAGS} ${_LDFLAGS} -o $@ expreserve.o
+	${CC} ${DEB} ${LDFLAGS} ${_LDFLAGS} -o $@ expreserve.o
 
 .c.o:
 	${CC} ${CFLAGS} ${_CFLAGS} -c $<
@@ -88,8 +88,7 @@ install: ${BINDIR} ${LIBDIR} ${SHAREDIR}
 	for i in recover preserve; do \
 		install ex$$i ${LIBDIR}/ex${VERSION}$$i; \
 	done
-	cp doc/vi/*.pdf doc/ex/*.pdf ${SHAREDIR}/
-	chmod 644 ${SHAREDIR}/*.pdf
+	install -m 644 doc/vi/*.pdf doc/ex/*.pdf ${SHAREDIR}/
 
 uninstall:
 	for i in ex vi e edit; do \
@@ -104,7 +103,7 @@ ${BINDIR} ${LIBDIR} ${SHAREDIR}:
 	mkdir -p $@
 
 ${LIBMALLOCDIR}/libmapmalloc.a:
-	cd ${LIBMALLOCDIR} && make CFLAGS="${CFLAGS} ${DBG_CFLAGS}"
+	cd ${LIBMALLOCDIR} && make CFLAGS="${CFLAGS} ${DEB} ${DEFINES}"
 
 lint:
 	lint ex.c ex_?*.c

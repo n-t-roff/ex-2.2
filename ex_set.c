@@ -32,7 +32,7 @@ set(void)
 		cp = optname;
 		do {
 			if (cp < &optname[ONMSZ - 2])
-				*cp++ = getchar();
+				*cp++ = ex_getchar();
 		} while (isalpha(peekchar()));
 		*cp = 0;
 		cp = optname;
@@ -68,7 +68,7 @@ printone:
 			serror("Option %s is not a toggle", op->oname);
 		if (c != 0 || setend())
 			goto printone;
-		if (getchar() != '=')
+		if (ex_getchar() != '=')
 			serror("Missing =@in assignment to option %s", op->oname);
 		switch (op->otype) {
 
@@ -86,7 +86,7 @@ printone:
 			while (!setend()) {
 				if (cp >= &optname[ONMSZ])
 					error("String too long@in option assignment");
-				*cp++ = getchar();
+				*cp++ = ex_getchar();
 			}
 			*cp = 0;
 			if (op->otype == OTERM) {

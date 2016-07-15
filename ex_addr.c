@@ -83,7 +83,7 @@ getnum(void)
 	register int cnt;
 
 	for (cnt = 0; isdigit(peekcd());)
-		cnt = cnt * 10 + getchar() - '0';
+		cnt = cnt * 10 + ex_getchar() - '0';
 	return (cnt);
 }
 
@@ -227,7 +227,7 @@ address(void)
 			continue;
 
 		case '\'':
-			c = markreg(getchar());
+			c = markreg(ex_getchar());
 			if (c == 0)
 				error("Marks are ' and a-z");
 			addr = getmark(c);

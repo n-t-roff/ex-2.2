@@ -12,7 +12,8 @@ git pull
 ```
 Some configuration (e.g. installation paths) can be done in the
 [`makefile`](https://github.com/n-t-roff/ex-2.2/blob/master/Makefile.in).
-For compiling it on BSD and Linux autoconfiguration is required:
+For compiling it on Linux and Solaris autoconfiguration is required.
+**ex-2.2 does currently not work on BSD!**
 ```sh
 $ ./configure
 ```

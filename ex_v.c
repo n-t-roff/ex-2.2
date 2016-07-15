@@ -64,7 +64,7 @@ oop(void)
 
 	ovbeg();
 	if (peekchar() == '/') {
-		ignore(compile(getchar(), 1));
+		ignore(compile(ex_getchar(), 1));
 		savere(scanre);
 		if (execute(0, dot) == 0)
 			error("Fail|Pattern not found on addressed line");
@@ -187,7 +187,7 @@ toopen:
 	bastate = VISUAL;
 	c = 0;
 	if (any(peekchar(), "+-^."))
-		c = getchar();
+		c = ex_getchar();
 	pastwh();
 	vsetsiz(isdigit(peekchar()) ? getnum() : value(WINDOW));
 	setwind();

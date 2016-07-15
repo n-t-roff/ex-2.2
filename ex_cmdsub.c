@@ -462,7 +462,7 @@ tagfind(bool quick)
 
 		while (!iswhite(peekchar()) && !endcmd(peekchar()))
 			if (lp < &lasttag[sizeof lasttag - 2])
-				*lp++ = getchar();
+				*lp++ = ex_getchar();
 			else
 				ignchar();
 		*lp++ = 0;
@@ -471,7 +471,7 @@ badtag:
 			error("Bad tag|Give one tag per line");
 	} else if (lasttag[0] == 0)
 		error("No previous tag");
-	c = getchar();
+	c = ex_getchar();
 	if (!endcmd(c))
 		goto badtag;
 	if (c == EOF)
@@ -584,7 +584,7 @@ zop(int hadpr)
 	znoclear = 0;
 	zweight = 0;
 	excl = exclam();
-	switch (c = op = getchar()) {
+	switch (c = op = ex_getchar()) {
 
 	case '^':
 		zweight = 1;
@@ -596,7 +596,7 @@ zop(int hadpr)
 		}
 	case '=':
 	case '.':
-		c = getchar();
+		c = ex_getchar();
 		break;
 
 	case EOF:
@@ -610,7 +610,7 @@ zop(int hadpr)
 	if (isdigit(c)) {
 		lines = c - '0';
 		for(;;) {
-			c = getchar();
+			c = ex_getchar();
 			if (!isdigit(c))
 				break;
 			lines *= 10;

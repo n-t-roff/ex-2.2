@@ -506,7 +506,7 @@ int	substitute(int);
 int	compile(int, int);
 int	execute(int, line *);
 void	ignchar(void);
-int	getchar(void);
+int	ex_getchar(void);
 int	getcd(void);
 int	peekchar(void);
 int	peekcd(void);

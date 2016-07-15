@@ -178,7 +178,7 @@ getn(char *cp)
 void
 ignnEOF(void)
 {
-	register int c = getchar();
+	register int c = ex_getchar();
 
 	if (c == EOF)
 		ungetchar(c);

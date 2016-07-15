@@ -98,7 +98,7 @@ commands(bool noprompt, bool exitoneof)
 		if (addr1 == 0)
 			addr1 = addr2;
 		if (c == ':')
-			c = getchar();
+			c = ex_getchar();
 
 		/*
 		 * Set command name for special character commands.
@@ -290,7 +290,7 @@ doecmd:
 		case 'k':
 casek:
 			pastwh();
-			c = getchar();
+			c = ex_getchar();
 			if (endcmd(c))
 				serror("Mark what?|%s requires following letter", Command);
 			ex_newline();
@@ -553,7 +553,7 @@ quit:
 				/* should use SCCS subst here */
 				ex_printf("Version 2.2, May 6, 1979"
 				    " (2BSD).  git "
-				    "160715 14:24"
+				    "160715 18:50"
 				    );
 				noonl();
 				continue;
