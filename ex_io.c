@@ -654,6 +654,11 @@ unixex(char *opt, char *up, int newstdin, int mode)
 	}
 	if (pid == 0) {
 		die++;
+		if (up) {
+			char *cp = up;
+			while (*cp)
+				*cp++ &= TRIM;
+		}
 		if (mode & 2) {
 			close(0);
 			dup(newstdin);
