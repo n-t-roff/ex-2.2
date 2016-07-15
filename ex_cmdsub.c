@@ -3,6 +3,7 @@
 #include "ex_argv.h"
 #include "ex_temp.h"
 #include "ex_tty.h"
+#include "ex_vis.h"
 
 /*
  * Command mode subroutines implementing
@@ -110,7 +111,7 @@ delete(bool hush)
 
 	nonzero();
 	if (!inglobal || inopen > 0) {
-		register int (*dsavint)();
+		void (*dsavint)(int);
 
 		change();
 		dsavint = signal(SIGINT, SIG_IGN);
@@ -211,7 +212,7 @@ join(int c)
 				}
 			}
 		}
-		while (*cp++ = *cp1++)
+		while ((*cp++ = *cp1++))
 			if (cp > &genbuf[LBSIZE-2])
 				error("Line overflow|Result line of join would be too long");
 		cp--;
@@ -293,7 +294,7 @@ move1(int cflag, line *addrt)
 	} else
 		error("Move to a moved line");
 	change();
-	if (!inglobal)
+	if (!inglobal) {
 		if (cflag) {
 			undap1 = addrt + 1;
 			undap2 = undap1 + lines;
@@ -305,6 +306,7 @@ move1(int cflag, line *addrt)
 			unddel = addrt;
 			squish();
 		}
+	}
 }
 
 static int

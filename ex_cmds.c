@@ -3,6 +3,7 @@
 #include "ex_argv.h"
 #include "ex_temp.h"
 #include "ex_tty.h"
+#include "ex_vis.h"
 
 bool	pflag, nflag;
 int	poffset;
@@ -43,7 +44,7 @@ commands(bool noprompt, bool exitoneof)
 		 * print the line at the specified offset
 		 * before the next command.
 		 */
-		if (pflag || lchng != chng && value(AUTOPRINT) && !inglobal && !inopen && endline) {
+		if (pflag || (lchng != chng && value(AUTOPRINT) && !inglobal && !inopen && endline)) {
 			pflag = 0;
 			nochng();
 			if (dol != zero) {
@@ -79,7 +80,7 @@ commands(bool noprompt, bool exitoneof)
 			addr1 = addr2;
 			addr = address();
 			c = getcd();
-			if (addr == 0)
+			if (addr == 0) {
 				if (c == ',')
 					addr = dot;
 				else if (addr1 != 0) {
@@ -87,6 +88,7 @@ commands(bool noprompt, bool exitoneof)
 					break;
 				} else
 					break;
+			}
 			addr2 = addr;
 			if (c == ';') {
 				c = ',';
@@ -551,7 +553,7 @@ quit:
 				/* should use SCCS subst here */
 				ex_printf("Version 2.2, May 6, 1979"
 				    " (2BSD).  git "
-				    "160625 18:19"
+				    "160715 14:24"
 				    );
 				noonl();
 				continue;

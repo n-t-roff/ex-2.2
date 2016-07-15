@@ -228,7 +228,7 @@ main(int ac, char **av)
 		if (ac == 0) {
 			die++;
 			setrupt();
-			execl(EXRECOVER, "exrecover", "-r", 0);
+			execl(EXRECOVER, "exrecover", "-r", NULL);
 			filioerr(EXRECOVER);
 			exit(1);
 		}
@@ -377,6 +377,7 @@ onhup(int i)
 void
 onintr(int i)
 {
+	char *s = "\nInterrupt";
 	(void)i;
 #ifdef V6
 	signal(SIGINT, onintr);
@@ -393,7 +394,7 @@ onintr(int i)
 	} else
 		vraw();
 #endif
-	error("\nInterrupt" + inopen);
+	error(inopen ? s + 1 : s);
 }
 
 /*

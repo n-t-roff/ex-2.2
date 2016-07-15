@@ -403,7 +403,7 @@ fixup:
 	 * space	Forward a character.
 	 */
 	case ' ':
-		forbid (margin() || opf == vmove && edge());
+		forbid (margin() || (opf == vmove && edge()));
 		while (cnt > 0 && !margin())
 			wcursor += dir, cnt--;
 		if ((margin() && opf == vmove) || wcursor < linebuf)
