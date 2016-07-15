@@ -449,7 +449,7 @@ short	vcntcol;
 int
 qcolumn(char *lim, char *gp)
 {
-	register int x;
+	register int x = 0;
 	void (*OO)();
 
 	OO = Outchar;
