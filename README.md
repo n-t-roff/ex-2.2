@@ -50,12 +50,6 @@ $ make distclean
     to a multiple of the tab width (e.g. a multiple of 8)
     *before* vi is started.
 
-* As with vi version 1.1
-  it is not possible to delete a range of lines
-  with `:`*startline*`,`*endline*`d` and then insert these
-  lines with `p` or `P`.
-  Use *n*`d` to delete and then `p` or `P` to insert.
-
 Features which had been invented after version 2.2:
 
 * `j`, `k`, `l`.
