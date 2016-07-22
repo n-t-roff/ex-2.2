@@ -114,7 +114,11 @@ top:
 		in_line[c] = 0;
 		for (c--; c >= 0; c--)
 			if (in_line[c] == 0)
+#ifdef BIT8
+				in_line[c] = ' ';
+#else
 				in_line[c] = QUOTE;
+#endif
 		input = in_line;
 		goto top;
 	}

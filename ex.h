@@ -127,7 +127,12 @@ extern struct	option options[NOPTS + 1];
  * Only arrays of and pointers to characters are used and parameters and
  * registers are never declared character.
  */
-#define	QUOTE	0200
+#ifdef BIT8
+# define	QUOTE	0400
+#else
+# define	QUOTE	0200
+#endif
+#define	RE_QUOTE	0200
 #define	TRIM	0177
 #ifndef CTRL
 #define	CTRL(c)	(c & 037)
@@ -289,20 +294,13 @@ line	*address(void);
 char	*cgoto(void);
 char	*genindent(int);
 char	*getblock(line, int);
-char	*getenv();
 line	*getmark(int);
 char	*longname(char *, char *);
 char	*mesg(char *);
 char	*place(char *, char *, char *);
 char	*plural(long);
-line	*scanfor();
 void	setin(line *);
-char	*strcat();
-char	*strcpy();
 char	*strend(char *);
-char	*tgetstr();
-char	*tgoto();
-char	*ttyname();
 line	*vback(line *, int);
 char	*vfindcol(int);
 char	*vgetline(int, char *, bool *);
@@ -330,7 +328,6 @@ void	vfilter(void);
 #ifndef V6
 void	vintr(int);
 #endif
-int	vputch();
 void	vshftop(void);
 void	yank(void);
 void	ostop(struct termios);
