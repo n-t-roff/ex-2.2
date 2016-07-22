@@ -79,9 +79,3 @@ Features which had been invented after version 2.2:
   describe vi version 2.2 in detail,
   [ex2.0-3.1.pdf](http://n-t-roff.github.io/ex/3.2/ex2.0-3.1.pdf)
   shows the differences to later vi versions.
-
-**Attention**:
-The original `vi` had not been 8-bit clean!
-Moreover it does automatically change all 8-bit characters to 7-bit
-in the whole file even if no editing is done!
-This will e.g. destroy all UTF-8 characters.
