@@ -34,15 +34,14 @@ LIBMALLOCDIR=libmapmalloc/common
 #MALLOC_O=${LIBMALLOCDIR}/libmapmalloc.a
 #
 CTAGS=	/usr/ucb/ctags
-DBG_CFLAGS= -Wall -Wextra \
-	-g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls \
+DEB=	-Wall -Wextra \
+	#-g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls \
 	-fsanitize=undefined \
 	-fsanitize=integer \
 	-fsanitize=address
-DEB=	#${DBG_CFLAGS}
-_CFLAGS=	-DTABS=8 -DLISP -DCHDIR -DUCVISUAL \
+_CFLAGS=${CFLAGS} -DTABS=8 -DLISP -DCHDIR -DUCVISUAL \
 	${D_SBRK} -DLIBDIR='"${LIBDIR}"' ${DEB} -DBIT8
-_LDFLAGS=-s
+_LDFLAGS=${LDFLAGS} ${DEB} ${DEFINES} -s
 OBJS=	ex.o ex_addr.o ex_cmds.o ex_cmds2.o ex_cmdsub.o ex_data.o ex_get.o \
 	ex_io.o ex_put.o ex_re.o ex_set.o ex_subr.o ex_temp.o ex_tty.o \
 	ex_v.o ex_vadj.o ex_vget.o ex_vmain.o ex_voperate.o \
@@ -60,16 +59,16 @@ ex_vars.h: ex_data.c
 	csh makeoptions ${CC} -E ${_CFLAGS}
 
 a.out: ${OBJS}
-	${CC} ${DEB} ${LDFLAGS} ${_LDFLAGS} ${OBJS} ${TERMLIB}
+	${CC} ${_LDFLAGS} ${OBJS} ${TERMLIB}
 
 exrecover: exrecover.o
-	${CC} ${DEB} ${LDFLAGS} ${_LDFLAGS} -o $@ exrecover.o
+	${CC} ${_LDFLAGS} -o $@ exrecover.o
 
 expreserve: expreserve.o
-	${CC} ${DEB} ${LDFLAGS} ${_LDFLAGS} -o $@ expreserve.o
+	${CC} ${_LDFLAGS} -o $@ expreserve.o
 
 .c.o:
-	${CC} ${CFLAGS} ${_CFLAGS} -c $<
+	${CC} ${_CFLAGS} -c $<
 
 clean:
 	-rm -f a.out exrecover expreserve ex2.0strings strings core trace tags
@@ -104,8 +103,3 @@ ${BINDIR} ${LIBDIR} ${SHAREDIR}:
 
 ${LIBMALLOCDIR}/libmapmalloc.a:
 	cd ${LIBMALLOCDIR} && make CFLAGS="${CFLAGS} ${DEB} ${DEFINES}"
-
-lint:
-	lint ex.c ex_?*.c
-	lint -u exrecover.c
-	lint expreserve.c

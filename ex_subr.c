@@ -168,7 +168,7 @@ getn(char *cp)
 {
 	register int i = 0;
 
-	while (isdigit(*cp))
+	while (isdigit((int)*cp))
 		i = i * 10 + *cp++ - '0';
 	if (*cp)
 		return (0);

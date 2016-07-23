@@ -918,7 +918,7 @@ grabtag(void)
 			if (dp < &lasttag[sizeof lasttag - 2])
 				*dp++ = *cp;
 			cp++;
-		} while (isalpha(*cp) || isdigit(*cp) || *cp == '_');
+		} while (isalpha((int)*cp) || isdigit((int)*cp) || *cp == '_');
 		*dp++ = 0;
 	}
 }
