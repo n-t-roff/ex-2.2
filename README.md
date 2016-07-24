@@ -12,7 +12,7 @@ git pull
 ```
 Some configuration (e.g. installation paths) can be done in the
 [`makefile`](https://github.com/n-t-roff/ex-2.2/blob/master/Makefile.in).
-For compiling on BSD, Linux and Solaris autoconfiguration is required:
+For compiling on BSD, Linux and Solaris, autoconfiguration is required:
 ```sh
 $ ./configure
 ```
@@ -53,6 +53,7 @@ $ make distclean
 Features which had been invented after version 2.2:
 
 * `j`, `k`, `l`.
+  (Existed in ex-1.1, new again in ex-2.8.)
   Use the alternative commands for cursor motions:
 
   * `h` works, alternative is `^H`
@@ -63,14 +64,19 @@ Features which had been invented after version 2.2:
   * `l`: &lt;SPACE&gt;
 
 * `ZZ`, `:x` (use `:wq`)
+  (New in ex-3.3.)
 * `~`, `^E`, `^Y`, `:map`
+  (New in ex-3.1.)
 * Job control
+  (New in ex-3.4.)
 * The comment character `"`.
   If you need to comment something in `~/.exrc`,
   put these lines to the end of the file
   and insert an empty line before them.
+  (New in ex-3.4.)
 * There is no read-only mode.
   Program name `view` and option `-R` did not exist.
+  (New in ex-3.4.)
 * The documents
   [viin.pdf](http://n-t-roff.github.io/ex/2.2/viin.pdf),
   [viapp.pdf](http://n-t-roff.github.io/ex/2.2/viapp.pdf)
