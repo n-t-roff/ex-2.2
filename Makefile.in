@@ -34,14 +34,10 @@ LIBMALLOCDIR=libmapmalloc/common
 #MALLOC_O=${LIBMALLOCDIR}/libmapmalloc.a
 #
 CTAGS=	/usr/ucb/ctags
-DEB=	-Wall -Wextra \
-	#-g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls \
-	-fsanitize=undefined \
-	-fsanitize=integer \
-	-fsanitize=address
+DEB=	-Wall -Wextra ${__CDBG} ${__SAN}
 _CFLAGS=${CFLAGS} -DTABS=8 -DLISP -DCHDIR -DUCVISUAL \
 	${D_SBRK} -DLIBDIR='"${LIBDIR}"' ${DEB} -DBIT8
-_LDFLAGS=${LDFLAGS} ${DEB} ${DEFINES} -s
+_LDFLAGS=${LDFLAGS} ${__SAN} ${DEFINES} -s
 OBJS=	ex.o ex_addr.o ex_cmds.o ex_cmds2.o ex_cmdsub.o ex_data.o ex_get.o \
 	ex_io.o ex_put.o ex_re.o ex_set.o ex_subr.o ex_temp.o ex_tty.o \
 	ex_v.o ex_vadj.o ex_vget.o ex_vmain.o ex_voperate.o \

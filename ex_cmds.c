@@ -553,7 +553,7 @@ quit:
 				/* should use SCCS subst here */
 				ex_printf("Version 2.2, May 6, 1979"
 				    " (2BSD).  git "
-				    "160723 12:19"
+				    "160803 12:25"
 				    );
 				noonl();
 				continue;
